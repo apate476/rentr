@@ -50,9 +50,9 @@ export async function proxy(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   if (user && (pathname === '/login' || pathname === '/signup')) {
-    const homeUrl = request.nextUrl.clone()
-    homeUrl.pathname = '/'
-    return NextResponse.redirect(homeUrl)
+    const searchUrl = request.nextUrl.clone()
+    searchUrl.pathname = '/search'
+    return NextResponse.redirect(searchUrl)
   }
 
   return supabaseResponse
