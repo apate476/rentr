@@ -2,19 +2,19 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types/database.types'
+import { ReviewList } from './review-list'
 
 type PropertyRow = Database['public']['Tables']['properties']['Row']
 
-const SCORES = [
-  { key: 'score_overall', label: 'Overall' },
-  { key: 'score_value', label: 'Value' },
-  { key: 'score_landlord', label: 'Landlord' },
-  { key: 'score_noise', label: 'Noise' },
-  { key: 'score_pests', label: 'Pests' },
-  { key: 'score_safety', label: 'Safety' },
-  { key: 'score_parking', label: 'Parking' },
-  { key: 'score_pets', label: 'Pet-friendly' },
-  { key: 'score_neighborhood', label: 'Neighborhood' },
+const SCORE_CATEGORIES = [
+  { key: 'avg_value', label: 'Value', emoji: '💰' },
+  { key: 'avg_landlord', label: 'Landlord', emoji: '👤' },
+  { key: 'avg_noise', label: 'Noise', emoji: '🔊' },
+  { key: 'avg_pests', label: 'Pests', emoji: '🐛' },
+  { key: 'avg_safety', label: 'Safety', emoji: '🛡️' },
+  { key: 'avg_parking', label: 'Parking', emoji: '🚗' },
+  { key: 'avg_pets', label: 'Pet-friendly', emoji: '🐾' },
+  { key: 'avg_neighborhood', label: 'Neighborhood', emoji: '🏙️' },
 ] as const
 
 function scoreColor(score: number | null) {
@@ -68,7 +68,6 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
 
   const reviewList = (reviews ?? []) as ReviewRow[]
 
-  // Check if logged-in user has already reviewed
   let hasReviewed = false
   if (user) {
     const { data } = await supabase
@@ -91,13 +90,13 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
       </Link>
 
       {/* Header */}
-      <div className="mb-8 space-y-1">
+      <div className="mb-8">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="font-[family-name:var(--font-poppins)] text-2xl font-bold">
               {property.address}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mt-0.5 text-sm">
               {property.city}, {property.state} {property.zip ?? ''}
               {property.property_type && (
                 <span className="ml-2 rounded-full border px-2 py-0.5 text-xs capitalize">
@@ -111,7 +110,8 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
               {property.avg_overall ? property.avg_overall.toFixed(1) : '—'}
             </p>
             <p className="text-muted-foreground text-xs">
-              {property.review_count} {property.review_count === 1 ? 'review' : 'reviews'}
+              🏠 Overall · {property.review_count}{' '}
+              {property.review_count === 1 ? 'review' : 'reviews'}
             </p>
           </div>
         </div>
@@ -119,14 +119,13 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
 
       {/* Score grid */}
       {property.review_count > 0 && (
-        <div className="bg-card mb-8 grid grid-cols-3 gap-3 rounded-2xl border p-4">
-          {SCORES.slice(1).map(({ key, label }) => {
-            const val = property[`avg_${key.replace('score_', '')}` as keyof typeof property] as
-              | number
-              | null
+        <div className="bg-card mb-8 grid grid-cols-4 gap-3 rounded-2xl border p-4">
+          {SCORE_CATEGORIES.map(({ key, label, emoji }) => {
+            const val = property[key as keyof PropertyRow] as number | null
             return (
               <div key={key} className="text-center">
-                <p className={`text-lg font-bold ${scoreColor(val)}`}>
+                <p className="mb-0.5 text-base">{emoji}</p>
+                <p className={`text-base font-bold ${scoreColor(val)}`}>
                   {val ? val.toFixed(1) : '—'}
                 </p>
                 <p className="text-muted-foreground text-xs">{label}</p>
@@ -137,7 +136,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
       )}
 
       {/* CTA */}
-      <div className="mb-8">
+      <div className="mb-10">
         {!user ? (
           <Link
             href={`/login?redirectTo=/property/${id}/review`}
@@ -160,53 +159,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Reviews */}
-      {reviewList.length === 0 ? (
-        <div className="rounded-2xl border border-dashed p-10 text-center">
-          <p className="text-muted-foreground text-sm">No reviews yet.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {reviewList.map((review) => (
-            <div key={review.id} className="bg-card space-y-3 rounded-2xl border p-5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className={`text-lg font-bold ${scoreColor(review.score_overall)}`}>
-                    {review.score_overall}/5
-                  </span>
-                  {review.would_rent_again !== null && (
-                    <span className="text-muted-foreground text-xs">
-                      {review.would_rent_again ? '✓ Would rent again' : "✗ Wouldn't rent again"}
-                    </span>
-                  )}
-                </div>
-                <span className="text-muted-foreground text-xs">
-                  Anonymous Tenant ·{' '}
-                  {new Date(review.created_at).toLocaleDateString('en-US', {
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </span>
-              </div>
-
-              {(review.move_in_year || review.rent_amount) && (
-                <p className="text-muted-foreground text-xs">
-                  {review.move_in_year && (
-                    <>
-                      {review.move_in_year}
-                      {review.move_out_year ? `–${review.move_out_year}` : '–present'}
-                    </>
-                  )}
-                  {review.rent_amount && review.move_in_year && ' · '}
-                  {review.rent_amount && `$${review.rent_amount.toLocaleString()}/mo`}
-                  {review.lease_type && ` · ${review.lease_type}`}
-                </p>
-              )}
-
-              <p className="text-sm leading-relaxed">{review.body}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      <ReviewList reviews={reviewList} />
     </div>
   )
 }
