@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { signOut } from '@/lib/supabase/actions'
 import { Button } from '@/components/ui/button'
+import { AiChatWidget } from '@/components/ai-chat-widget'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -42,6 +43,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       </header>
 
       <main>{children}</main>
+      <AiChatWidget />
     </div>
   )
 }

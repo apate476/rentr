@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState } from 'react'
+import { useState, useActionState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,7 +28,7 @@ interface ReviewWizardProps {
   action: (prevState: ReviewState, formData: FormData) => Promise<ReviewState>
 }
 
-export function ReviewWizard({ propertyId: _, action }: ReviewWizardProps) {
+export function ReviewWizard({ action }: ReviewWizardProps) {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const TOTAL_STEPS = 5
@@ -44,20 +44,40 @@ export function ReviewWizard({ propertyId: _, action }: ReviewWizardProps) {
   const [rentAmount, setRentAmount] = useState('')
   const [leaseType, setLeaseType] = useState('')
   const [wouldRentAgain, setWouldRentAgain] = useState<'yes' | 'no' | null>(null)
+  const [coachSuggestions, setCoachSuggestions] = useState<string[]>([])
+  const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<string>>(new Set())
+  const coachTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [state, formAction, isPending] = useActionState(action, { error: null })
 
-  function buildFormData(): FormData {
-    const fd = new FormData()
-    SCORE_FIELDS.forEach((f) => scores[f.name] && fd.set(f.name, String(scores[f.name])))
-    fd.set('body', body)
-    if (moveInYear) fd.set('move_in_year', moveInYear)
-    if (!stillLive && moveOutYear) fd.set('move_out_year', moveOutYear)
-    if (rentAmount) fd.set('rent_amount', rentAmount)
-    if (leaseType) fd.set('lease_type', leaseType)
-    if (wouldRentAgain) fd.set('would_rent_again', wouldRentAgain)
-    return fd
-  }
+  // Writing coach: debounced call when body is long enough
+  useEffect(() => {
+    if (step !== 3) return
+    if (coachTimerRef.current) clearTimeout(coachTimerRef.current)
+    if (body.length < 50) {
+      setCoachSuggestions([])
+      return
+    }
+    coachTimerRef.current = setTimeout(() => {
+      fetch('/api/ai/coach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body, scores }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          const filtered = (data.suggestions as string[]).filter(
+            (s) => !dismissedSuggestions.has(s)
+          )
+          setCoachSuggestions(filtered)
+        })
+        .catch(() => {})
+    }, 1500)
+    return () => {
+      if (coachTimerRef.current) clearTimeout(coachTimerRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [body, step])
 
   function canAdvance(): boolean {
     if (step === 2) return SCORE_FIELDS.every((f) => scores[f.name] !== null)
@@ -216,6 +236,33 @@ export function ReviewWizard({ propertyId: _, action }: ReviewWizardProps) {
             </span>
             <span className="text-muted-foreground">{body.length} / 2000</span>
           </div>
+
+          {/* AI writing coach suggestions */}
+          {coachSuggestions.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-muted-foreground text-xs">✦ AI suggestions</p>
+              <div className="flex flex-wrap gap-2">
+                {coachSuggestions.map((s) => (
+                  <div
+                    key={s}
+                    className="flex items-center gap-1.5 rounded-full border bg-violet-50 border-violet-200 px-3 py-1 text-xs text-violet-800"
+                  >
+                    <span>{s}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDismissedSuggestions((prev) => new Set([...prev, s]))
+                        setCoachSuggestions((prev) => prev.filter((x) => x !== s))
+                      }}
+                      className="text-violet-400 hover:text-violet-700 leading-none"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

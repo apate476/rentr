@@ -2,10 +2,12 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import type { Database } from '@/types/database.types'
+import { Redis } from '@upstash/redis'
 
-type ReviewInsert = Database['public']['Tables']['reviews']['Insert']
-type PropertyInsert = Database['public']['Tables']['properties']['Insert']
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
 
 export type ReviewState = { error: string | null }
 
@@ -72,6 +74,9 @@ export async function createReview(
     if (error.code === '23505') return { error: 'You have already reviewed this property.' }
     return { error: 'Something went wrong. Please try again.' }
   }
+
+  // Invalidate AI summary cache so the next page load regenerates it
+  await redis.del(`ai:summary:${propertyId}`)
 
   redirect(`/property/${propertyId}?reviewed=1`)
 }

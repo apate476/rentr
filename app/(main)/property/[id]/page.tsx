@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types/database.types'
 import { ReviewList } from './review-list'
+import { AiSummary } from '@/components/ai-summary'
 
 type PropertyRow = Database['public']['Tables']['properties']['Row']
 
@@ -22,6 +23,18 @@ function scoreColor(score: number | null) {
   if (score >= 4) return 'text-green-600'
   if (score >= 3) return 'text-yellow-600'
   return 'text-red-500'
+}
+
+function getConfidence(count: number): 'Low' | 'Medium' | 'High' {
+  if (count < 3) return 'Low'
+  if (count < 10) return 'Medium'
+  return 'High'
+}
+
+const confidenceColor = {
+  Low: 'text-red-500',
+  Medium: 'text-yellow-600',
+  High: 'text-green-600',
 }
 
 type ReviewRow = {
@@ -79,6 +92,17 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
     hasReviewed = !!data
   }
 
+  // Derived stats
+  const reviewsWithWRA = reviewList.filter((r) => r.would_rent_again !== null)
+  const wouldRentAgainPct =
+    reviewsWithWRA.length >= 3
+      ? Math.round(
+          (reviewsWithWRA.filter((r) => r.would_rent_again).length / reviewsWithWRA.length) * 100
+        )
+      : null
+
+  const confidence = getConfidence(property.review_count ?? 0)
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
       {/* Back */}
@@ -113,6 +137,21 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
               🏠 Overall · {property.review_count}{' '}
               {property.review_count === 1 ? 'review' : 'reviews'}
             </p>
+            {property.review_count > 0 && (
+              <div className="mt-1 flex items-center justify-end gap-2 text-xs">
+                <span className={confidenceColor[confidence]}>{confidence} confidence</span>
+                {wouldRentAgainPct !== null && (
+                  <>
+                    <span className="text-muted-foreground">·</span>
+                    <span
+                      className={wouldRentAgainPct >= 60 ? 'text-green-600' : 'text-red-500'}
+                    >
+                      {wouldRentAgainPct}% would rent again
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -133,6 +172,11 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
             )
           })}
         </div>
+      )}
+
+      {/* AI Summary */}
+      {property.review_count > 0 && (
+        <AiSummary propertyId={id} reviewCount={property.review_count ?? 0} />
       )}
 
       {/* CTA */}

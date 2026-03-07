@@ -12,6 +12,8 @@ export const STORAGE_BUCKET = 'review-photos'
 
 export const FREE_REVIEWS_PER_PROPERTY = 5 // reads per day for free users (V2)
 
+export const AI_FREE_CHATS_PER_MONTH = 3
+
 export const PROTECTED_ROUTES = [
   '/property/new',
   '/profile',
