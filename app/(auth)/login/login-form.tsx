@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { signIn, signInWithGoogle } from '@/lib/supabase/actions'
 
 const initialState = { error: null }
@@ -40,15 +39,13 @@ export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(signIn, initialState)
 
   return (
-    <Card className="border-0 shadow-lg">
-      <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="font-[family-name:var(--font-poppins)] text-2xl font-bold">
-          Welcome back
-        </CardTitle>
-        <CardDescription>Sign in to your Rentr account</CardDescription>
-      </CardHeader>
+    <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      <h1 className="font-[family-name:var(--font-poppins)] text-2xl font-bold text-slate-900">
+        Welcome back
+      </h1>
+      <p className="mb-6 mt-1 text-sm text-slate-500">Sign in to your Rentr account</p>
 
-      <CardContent className="space-y-4">
+      <div className="space-y-4">
         {/* Google OAuth */}
         <form action={signInWithGoogle}>
           <Button type="submit" variant="outline" className="w-full rounded-full" size="lg">
@@ -57,12 +54,13 @@ export default function LoginForm() {
           </Button>
         </form>
 
+        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
+            <span className="w-full border-t border-slate-100" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card text-muted-foreground px-2">or</span>
+            <span className="bg-white px-2 text-slate-400">or</span>
           </div>
         </div>
 
@@ -71,13 +69,13 @@ export default function LoginForm() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
 
           {(state.error || oauthError) && (
-            <p className="text-destructive bg-destructive/10 rounded-lg px-3 py-2 text-sm">
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
               {state.error ?? 'Authentication failed. Please try again.'}
             </p>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-slate-700">Email</Label>
             <Input
               id="email"
               name="email"
@@ -85,14 +83,19 @@ export default function LoginForm() {
               placeholder="you@example.com"
               autoComplete="email"
               required
-              className="rounded-lg"
+              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <span className="text-muted-foreground text-xs">Forgot password?</span>
+              <Label htmlFor="password" className="text-slate-700">Password</Label>
+              <Link
+                href="/forgot-password"
+                className="text-xs text-slate-400 hover:text-slate-700 transition-colors"
+              >
+                Forgot password?
+              </Link>
             </div>
             <Input
               id="password"
@@ -101,7 +104,7 @@ export default function LoginForm() {
               placeholder="••••••••"
               autoComplete="current-password"
               required
-              className="rounded-lg"
+              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
             />
           </div>
 
@@ -110,13 +113,13 @@ export default function LoginForm() {
           </Button>
         </form>
 
-        <p className="text-muted-foreground text-center text-sm">
+        <p className="text-center text-sm text-slate-500">
           Don&apos;t have an account?{' '}
           <Link href="/signup" className="text-primary font-medium hover:underline">
             Sign up
           </Link>
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

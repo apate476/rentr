@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { X, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AI_FREE_CHATS_PER_MONTH } from '@/lib/constants'
 
@@ -107,24 +108,24 @@ export function AiChatWidget() {
   return (
     <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end gap-3">
       {open && (
-        <div className="bg-background flex h-[500px] w-[340px] flex-col overflow-hidden rounded-2xl border shadow-xl">
+        <div className="flex h-[500px] w-[340px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
           {/* Header */}
-          <div className="flex items-center justify-between border-b px-4 py-3">
+          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
             <div>
               <p className="text-sm font-semibold">Rentr AI</p>
-              <p className="text-muted-foreground text-xs">{contextLabel}</p>
+              <p className="text-xs text-slate-400">{contextLabel}</p>
             </div>
             <div className="flex items-center gap-3">
               {remaining !== null && !exhausted && !needsAuth && (
-                <span className="text-muted-foreground text-xs">
+                <span className="text-xs text-slate-400">
                   {remaining}/{AI_FREE_CHATS_PER_MONTH} free
                 </span>
               )}
               <button
                 onClick={() => setOpen(false)}
-                className="text-muted-foreground hover:text-foreground text-xl leading-none"
+                className="text-slate-400 transition-colors hover:text-slate-900"
               >
-                ×
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -132,7 +133,7 @@ export function AiChatWidget() {
           {/* Messages */}
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {messages.length === 0 && (
-              <p className="text-muted-foreground pt-6 text-center text-sm">{emptyHint}</p>
+              <p className="pt-6 text-center text-sm text-slate-400">{emptyHint}</p>
             )}
             {messages.map((msg, i) => (
               <div
@@ -141,12 +142,12 @@ export function AiChatWidget() {
               >
                 <div
                   className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
-                    msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                    msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-slate-100 text-slate-800'
                   }`}
                 >
                   {msg.content ||
                     (streaming && i === messages.length - 1 ? (
-                      <span className="text-muted-foreground animate-pulse">●●●</span>
+                      <span className="animate-pulse text-slate-400">●●●</span>
                     ) : (
                       ''
                     ))}
@@ -157,16 +158,16 @@ export function AiChatWidget() {
           </div>
 
           {/* Footer */}
-          <div className="border-t p-3">
+          <div className="border-t border-slate-100 p-3">
             {needsAuth ? (
-              <p className="text-muted-foreground text-center text-sm">
+              <p className="text-center text-sm text-slate-500">
                 <a href="/login" className="text-primary underline">
                   Sign in
                 </a>{' '}
                 to use Rentr AI
               </p>
             ) : exhausted ? (
-              <p className="text-muted-foreground text-center text-xs">
+              <p className="text-center text-xs text-slate-500">
                 You&apos;ve used your {AI_FREE_CHATS_PER_MONTH} free chats this month.{' '}
                 <a href="/settings" className="text-primary underline">
                   Upgrade
@@ -182,7 +183,7 @@ export function AiChatWidget() {
                   onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
                   placeholder={placeholder}
                   disabled={streaming}
-                  className="border-input bg-background flex-1 rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-400 disabled:opacity-50"
+                  className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
                 />
                 <Button
                   size="sm"
@@ -190,7 +191,7 @@ export function AiChatWidget() {
                   disabled={streaming || !input.trim()}
                   className="rounded-xl"
                 >
-                  ↑
+                  <Send className="h-4 w-4" />
                 </Button>
               </div>
             )}
@@ -205,7 +206,7 @@ export function AiChatWidget() {
         aria-label={open ? 'Close AI chat' : 'Open AI chat'}
       >
         {open ? (
-          <span className="text-xl font-bold">×</span>
+          <X className="h-5 w-5" />
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"

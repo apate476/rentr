@@ -19,25 +19,37 @@ export function AiSummary({
   const [summary, setSummary] = useState<Summary | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const [error, setError] = useState<string | null>(null)
+
   useEffect(() => {
+    setError(null)
+    setLoading(true)
     fetch('/api/ai/summarize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ property_id: propertyId }),
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) {
+          throw new Error('Failed to generate summary')
+        }
+        return r.json()
+      })
       .then((data) => {
         if (data.praised?.length > 0 || data.issues?.length > 0) {
           setSummary(data)
         }
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error('AI summary error:', err)
+        setError('Unable to generate AI summary at this time')
+      })
       .finally(() => setLoading(false))
   }, [propertyId])
 
   if (loading) {
     return (
-      <div className="bg-card mb-6 space-y-3 rounded-2xl border p-4">
+      <div className="mb-6 space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
         <Skeleton className="h-3 w-32" />
         <div className="flex flex-wrap gap-2">
           {[1, 2, 3].map((i) => (
@@ -53,12 +65,27 @@ export function AiSummary({
     )
   }
 
+  if (error) {
+    return (
+      <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+        <p className="text-xs text-amber-800">
+          {error}. Please try refreshing the page.
+        </p>
+      </div>
+    )
+  }
+
   if (!summary) return null
 
   return (
-    <div className="bg-card mb-6 space-y-3 rounded-2xl border p-4">
-      <p className="text-muted-foreground text-xs font-medium">
-        ✦ AI Summary · Based on {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
+    <div className="mb-6 space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+      <p className="flex items-center gap-1.5 text-xs">
+        <span className="rounded bg-primary px-1.5 py-0.5 font-[family-name:var(--font-poppins)] text-[10px] font-black uppercase tracking-wider text-white">
+          AI
+        </span>
+        <span className="text-slate-500">
+          Summary · Based on {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
+        </span>
       </p>
 
       {summary.praised.length > 0 && (
@@ -94,7 +121,7 @@ export function AiSummary({
       )}
 
       {summary.trend && (
-        <p className="text-muted-foreground border-t pt-2 text-xs">{summary.trend}</p>
+        <p className="border-t border-slate-100 pt-2 text-xs text-slate-500">{summary.trend}</p>
       )}
     </div>
   )

@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import { toast } from 'sonner'
 import { RatingDistribution } from '@/components/rating-distribution'
 
 type ReviewRow = {
@@ -34,11 +36,16 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'lowest', label: 'Lowest rated' },
 ]
 
-function scoreColor(score: number | null) {
-  if (!score) return 'text-muted-foreground'
-  if (score >= 4) return 'text-green-600'
-  if (score >= 3) return 'text-yellow-600'
-  return 'text-red-500'
+function scoreBadgeClass(score: number): string {
+  if (score >= 4) return 'bg-green-50 text-green-700'
+  if (score >= 3) return 'bg-amber-50 text-amber-700'
+  return 'bg-red-50 text-red-600'
+}
+
+function borderClass(score: number): string {
+  if (score >= 4) return 'border-l-green-500'
+  if (score >= 3) return 'border-l-amber-400'
+  return 'border-l-red-400'
 }
 
 function sortReviews(reviews: ReviewRow[], sort: SortKey): ReviewRow[] {
@@ -52,13 +59,26 @@ function sortReviews(reviews: ReviewRow[], sort: SortKey): ReviewRow[] {
   })
 }
 
-export function ReviewList({ reviews }: { reviews: ReviewRow[] }) {
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+}
+
+export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]; showSuccessToast?: boolean }) {
   const [sort, setSort] = useState<SortKey>('helpful')
+  const router = useRouter()
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (showSuccessToast) {
+      toast.success('Review submitted!', { description: 'Your review is now live.' })
+      router.replace(pathname)
+    }
+  }, [showSuccessToast, router, pathname])
 
   if (reviews.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed p-10 text-center">
-        <p className="text-muted-foreground text-sm">No reviews yet.</p>
+      <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+        <p className="text-sm text-slate-400">No reviews yet. Be the first to share your experience.</p>
       </div>
     )
   }
@@ -70,13 +90,13 @@ export function ReviewList({ reviews }: { reviews: ReviewRow[] }) {
       <RatingDistribution reviews={reviews} />
 
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold">
+        <p className="text-sm font-semibold text-slate-900">
           {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
         </p>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
-          className="bg-card rounded-lg border px-3 py-1.5 text-xs"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           {SORT_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
@@ -88,29 +108,34 @@ export function ReviewList({ reviews }: { reviews: ReviewRow[] }) {
 
       <div className="space-y-4">
         {sorted.map((review) => (
-          <div key={review.id} className="bg-card space-y-3 rounded-2xl border p-5">
-            <div className="flex items-center justify-between">
+          <div
+            key={review.id}
+            className={`rounded-2xl border border-slate-200 border-l-4 bg-white p-5 shadow-sm transition-shadow hover:shadow-md ${borderClass(review.score_overall)}`}
+          >
+            {/* Top row: score + WRA + date */}
+            <div className="mb-3 flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className={`text-lg font-bold ${scoreColor(review.score_overall)}`}>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-sm font-bold ${scoreBadgeClass(review.score_overall)}`}
+                >
                   {review.score_overall}/5
                 </span>
                 {review.would_rent_again !== null && (
-                  <span className="text-muted-foreground text-xs">
-                    {review.would_rent_again ? '✓ Would rent again' : "✗ Wouldn't rent again"}
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${review.would_rent_again ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}
+                  >
+                    {review.would_rent_again ? 'Would rent again' : 'Would not rent again'}
                   </span>
                 )}
               </div>
-              <span className="text-muted-foreground text-xs">
-                Anonymous Tenant ·{' '}
-                {new Date(review.created_at).toLocaleDateString('en-US', {
-                  month: 'short',
-                  year: 'numeric',
-                })}
+              <span className="shrink-0 text-xs text-slate-400">
+                Anonymous Tenant · {formatDate(review.created_at)}
               </span>
             </div>
 
+            {/* Tenancy metadata */}
             {(review.move_in_year || review.rent_amount) && (
-              <p className="text-muted-foreground text-xs">
+              <p className="mb-3 text-xs text-slate-400">
                 {review.move_in_year && (
                   <>
                     {review.move_in_year}
@@ -123,11 +148,16 @@ export function ReviewList({ reviews }: { reviews: ReviewRow[] }) {
               </p>
             )}
 
-            <p className="text-sm leading-relaxed">{review.body}</p>
+            {/* Review body */}
+            <p className="text-sm leading-relaxed text-slate-700">
+              &ldquo;{review.body}&rdquo;
+            </p>
 
+            {/* Helpful count */}
             {review.helpful_count > 0 && (
-              <p className="text-muted-foreground text-xs">
-                {review.helpful_count} found this helpful
+              <p className="mt-3 text-xs text-slate-400">
+                {review.helpful_count} {review.helpful_count === 1 ? 'person' : 'people'} found
+                this helpful
               </p>
             )}
           </div>

@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { signUp, signInWithGoogle } from '@/lib/supabase/actions'
 
 const initialState = { error: null }
@@ -35,15 +34,15 @@ export default function SignupPage() {
   const [state, formAction, isPending] = useActionState(signUp, initialState)
 
   return (
-    <Card className="border-0 shadow-lg">
-      <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="font-[family-name:var(--font-poppins)] text-2xl font-bold">
-          Create an account
-        </CardTitle>
-        <CardDescription>Start leaving honest reviews for renters like you</CardDescription>
-      </CardHeader>
+    <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      <h1 className="font-[family-name:var(--font-poppins)] text-2xl font-bold text-slate-900">
+        Create an account
+      </h1>
+      <p className="mb-6 mt-1 text-sm text-slate-500">
+        Start leaving honest reviews for renters like you
+      </p>
 
-      <CardContent className="space-y-4">
+      <div className="space-y-4">
         {/* Google OAuth */}
         <form action={signInWithGoogle}>
           <Button type="submit" variant="outline" className="w-full rounded-full" size="lg">
@@ -52,25 +51,37 @@ export default function SignupPage() {
           </Button>
         </form>
 
+        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
+            <span className="w-full border-t border-slate-100" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card text-muted-foreground px-2">or</span>
+            <span className="bg-white px-2 text-slate-400">or</span>
           </div>
         </div>
 
         {/* Email/Password form */}
         <form action={formAction} className="space-y-4">
           {state.error && (
-            <p className="text-destructive bg-destructive/10 rounded-lg px-3 py-2 text-sm">
-              {state.error}
-            </p>
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{state.error}</p>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="full_name" className="text-slate-700">Full name</Label>
+            <Input
+              id="full_name"
+              name="full_name"
+              type="text"
+              placeholder="Jane Smith"
+              autoComplete="name"
+              required
+              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-slate-700">Email</Label>
             <Input
               id="email"
               name="email"
@@ -78,12 +89,12 @@ export default function SignupPage() {
               placeholder="you@example.com"
               autoComplete="email"
               required
-              className="rounded-lg"
+              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="password" className="text-slate-700">Password</Label>
             <Input
               id="password"
               name="password"
@@ -92,7 +103,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               minLength={8}
               required
-              className="rounded-lg"
+              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
             />
           </div>
 
@@ -100,20 +111,21 @@ export default function SignupPage() {
             {isPending ? 'Creating account…' : 'Create account'}
           </Button>
 
-          <p className="text-muted-foreground text-center text-xs">
+          <p className="text-center text-xs text-slate-400">
             By creating an account, you agree to our{' '}
-            <span className="cursor-pointer underline">Terms</span> and{' '}
-            <span className="cursor-pointer underline">Privacy Policy</span>.
+            <Link href="/terms" className="underline hover:text-slate-700 transition-colors">Terms</Link>
+            {' '}and{' '}
+            <Link href="/privacy" className="underline hover:text-slate-700 transition-colors">Privacy Policy</Link>.
           </p>
         </form>
 
-        <p className="text-muted-foreground text-center text-sm">
+        <p className="text-center text-sm text-slate-500">
           Already have an account?{' '}
           <Link href="/login" className="text-primary font-medium hover:underline">
             Sign in
           </Link>
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useActionState } from 'react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ReviewWizard } from '@/app/(main)/property/[id]/review/review-wizard'
 import { createPropertyAndReview } from '@/app/(main)/property/[id]/review/actions'
@@ -37,50 +38,56 @@ export function NewPropertyWizard({ address, placeId: _ }: Props) {
   if (!confirmed) {
     return (
       <div className="space-y-6">
-        <div className="bg-card rounded-2xl border p-5">
-          <p className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
-            Address
-          </p>
-          <p className="font-semibold">{address}</p>
+        {/* Address confirmation card */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-400">Address</p>
+          <p className="font-semibold text-slate-900">{address}</p>
+          <p className="mt-0.5 text-xs text-slate-400">Be the first to share your experience.</p>
         </div>
 
-        <div className="space-y-3">
-          <p className="text-sm font-medium">City, State, ZIP</p>
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-slate-800">
+            City, State, ZIP{' '}
+            <span className="text-xs font-normal text-red-400">* required</span>
+          </p>
           <div className="grid grid-cols-3 gap-2">
             <input
               placeholder="City"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="border-input col-span-1 rounded-lg border px-3 py-2 text-sm"
+              className="col-span-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
             <input
               placeholder="ST"
               value={state}
               maxLength={2}
               onChange={(e) => setState(e.target.value.toUpperCase())}
-              className="border-input rounded-lg border px-3 py-2 text-sm"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
             <input
               placeholder="ZIP"
               value={zip}
               onChange={(e) => setZip(e.target.value)}
-              className="border-input rounded-lg border px-3 py-2 text-sm"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </div>
 
-        <div className="space-y-3">
-          <p className="text-sm font-medium">Property type (optional)</p>
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-slate-800">
+            Property type{' '}
+            <span className="text-xs font-normal text-slate-400">(optional)</span>
+          </p>
           <div className="flex flex-wrap gap-2">
             {PROPERTY_TYPES.map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => setPropertyType(t === propertyType ? '' : t)}
-                className={`rounded-full border px-4 py-1.5 text-sm capitalize transition-colors ${
+                className={`rounded-full border px-4 py-1.5 text-sm capitalize transition-all ${
                   propertyType === t
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'hover:border-primary/40'
+                    ? 'border-slate-900 bg-slate-900 text-white'
+                    : 'border-slate-200 text-slate-600 hover:border-slate-400'
                 }`}
               >
                 {t}
@@ -95,7 +102,9 @@ export function NewPropertyWizard({ address, placeId: _ }: Props) {
           className="w-full rounded-full"
           size="lg"
         >
-          Confirm & write review →
+          <span className="inline-flex items-center gap-1.5">
+            Confirm &amp; write review <ArrowRight className="h-4 w-4" />
+          </span>
         </Button>
       </div>
     )
