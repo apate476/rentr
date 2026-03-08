@@ -16,25 +16,25 @@ export function RatingDistribution({ reviews }: { reviews: ReviewRow[] }) {
   }))
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-      <p className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-400">
+    <div className="rounded-2xl border border-warm-border bg-warm-card p-5 shadow-lg">
+      <p className="mb-4 text-xs font-bold uppercase tracking-wider text-warm-muted">
         Rating breakdown
       </p>
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {counts.map(({ star, count }) => {
           const pct = total > 0 ? (count / total) * 100 : 0
           return (
             <div key={star} className="flex items-center gap-3">
-              <span className="w-5 shrink-0 text-right text-xs font-medium text-slate-500">
+              <span className="w-6 shrink-0 text-right text-xs font-medium text-warm-text">
                 {star}★
               </span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-warm-secondary">
                 <div
-                  className={`h-2 rounded-full transition-all duration-500 ${barClass(star)}`}
+                  className={`h-2.5 rounded-full transition-all duration-500 ${barClass(star)}`}
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className="w-5 shrink-0 text-right text-xs text-slate-400">{count}</span>
+              <span className="w-8 shrink-0 text-right text-xs font-medium text-warm-muted">{count}</span>
             </div>
           )
         })}

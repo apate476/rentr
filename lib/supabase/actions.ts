@@ -25,15 +25,17 @@ export async function signUp(prevState: AuthState, formData: FormData): Promise<
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const fullName = (formData.get('full_name') as string).trim()
+  const redirectTo = (formData.get('redirectTo') as string) || '/'
 
   if (!fullName) return { error: 'Full name is required.' }
 
+  // Store redirectTo in user metadata so we can use it after email verification
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      data: { full_name: fullName },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+      data: { full_name: fullName, redirectTo },
     },
   })
 
@@ -47,13 +49,16 @@ export async function signUp(prevState: AuthState, formData: FormData): Promise<
   redirect('/verify-email')
 }
 
-export async function signInWithGoogle(): Promise<void> {
+export async function signInWithGoogle(formData: FormData): Promise<void> {
   const supabase = await createClient()
+
+  const redirectTo = (formData.get('redirectTo') as string) || '/'
+  const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent(redirectTo)}`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+      redirectTo: callbackUrl,
     },
   })
 

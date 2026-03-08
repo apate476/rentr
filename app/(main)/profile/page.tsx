@@ -22,9 +22,9 @@ type MyReview = {
 }
 
 function scoreBadgeClass(score: number): string {
-  if (score >= 4) return 'bg-green-50 text-green-700'
-  if (score >= 3) return 'bg-amber-50 text-amber-700'
-  return 'bg-red-50 text-red-600'
+  if (score >= 4) return 'bg-green-500 text-white'
+  if (score >= 3) return 'bg-amber-400 text-white'
+  return 'bg-red-500 text-white'
 }
 
 function borderClass(score: number): string {
@@ -75,7 +75,7 @@ export default async function ProfilePage() {
       </div>
 
       {/* Account card */}
-      <div className="mb-12 rounded-xl border border-warm-border bg-warm-card p-8 shadow-sm">
+      <div className="mb-12 rounded-xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-8 shadow-lg">
         <h2 className="mb-6 text-xs font-bold uppercase tracking-wider text-warm-muted">
           Account
         </h2>
@@ -119,14 +119,14 @@ export default async function ProfilePage() {
       </div>
 
       {myReviews.length === 0 ? (
-        <div className="rounded-xl border border-warm-border bg-warm-card p-12 text-center shadow-sm">
+        <div className="rounded-xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-12 text-center shadow-lg">
           <p className="text-sm text-warm-muted">You haven&apos;t written any reviews yet.</p>
           <Link
             href="/search"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-warm-text px-6 py-3 text-sm font-medium text-warm-card transition-colors hover:bg-warm-text/90"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-warm-text px-6 py-3 text-sm font-medium text-warm-card transition-all hover:bg-warm-text/90 hover:shadow-md"
           >
             <span className="inline-flex items-center gap-1.5">
-              Search a property to review <ArrowRight className="h-4 w-4" />
+              Search a property to review <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
           </Link>
         </div>
@@ -138,7 +138,7 @@ export default async function ProfilePage() {
               <Link
                 key={review.id}
                 href={`/property/${review.property_id}`}
-                className={`block rounded-xl border border-warm-border border-l-4 bg-warm-card p-6 shadow-sm transition-shadow hover:shadow-md ${borderClass(review.score_overall)}`}
+                className={`group block rounded-xl border border-warm-border border-l-4 bg-warm-card p-6 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20 hover:-translate-y-1 ${borderClass(review.score_overall)}`}
               >
                 {/* Property address */}
                 {prop && (
@@ -161,13 +161,13 @@ export default async function ProfilePage() {
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-sm font-bold ${scoreBadgeClass(review.score_overall)}`}
+                      className={`rounded-lg px-3 py-1 text-sm font-black text-white shadow-sm ${scoreBadgeClass(review.score_overall)}`}
                     >
                       {review.score_overall}/5
                     </span>
                     {review.would_rent_again !== null && (
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${review.would_rent_again ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}
+                        className={`rounded-lg px-2.5 py-1 text-xs font-medium text-white shadow-sm ${review.would_rent_again ? 'bg-green-500' : 'bg-red-500'}`}
                       >
                         {review.would_rent_again ? 'Would rent again' : 'Would not rent again'}
                       </span>
@@ -190,8 +190,8 @@ export default async function ProfilePage() {
                   &ldquo;{review.body}&rdquo;
                 </p>
 
-                <p className="mt-4 inline-flex items-center gap-1 text-xs text-warm-muted">
-                  View property <ArrowRight className="h-3.5 w-3.5" />
+                <p className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-warm-text opacity-0 transition-opacity group-hover:opacity-100">
+                  View property <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </p>
               </Link>
             )

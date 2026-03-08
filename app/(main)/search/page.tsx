@@ -22,10 +22,10 @@ function truncate(text: string, max: number): string {
 }
 
 function scoreBadgeClass(score: number | null): string {
-  if (!score) return 'bg-slate-100 text-slate-400'
-  if (score >= 4) return 'bg-green-50 text-green-700'
-  if (score >= 3) return 'bg-amber-50 text-amber-700'
-  return 'bg-red-50 text-red-600'
+  if (!score) return 'bg-warm-secondary text-warm-muted'
+  if (score >= 4) return 'bg-green-500 text-white'
+  if (score >= 3) return 'bg-amber-400 text-white'
+  return 'bg-red-500 text-white'
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,17 +104,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-warm-border bg-warm-card p-12 text-center shadow-sm">
-            <p className="mb-2 font-display text-xl text-warm-text">&ldquo;{q}&rdquo;</p>
+          <div className="rounded-2xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-12 text-center shadow-lg">
+            <p className="mb-2 font-display text-2xl text-warm-text">&ldquo;{q}&rdquo;</p>
             <p className="mb-6 text-sm leading-relaxed text-warm-muted">
               No reviews yet for this address. Be the first to share your experience.
             </p>
             <Link
               href={`/review/new?q=${encodeURIComponent(q)}${place_id ? `&place_id=${place_id}` : ''}`}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-warm-text px-6 py-3 text-sm font-medium text-warm-card transition-colors hover:bg-warm-text/90"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-warm-text px-6 py-3 text-sm font-medium text-warm-card transition-all hover:bg-warm-text/90 hover:shadow-md"
             >
               <span className="inline-flex items-center gap-1.5">
-                Write the first review <ArrowRight className="h-4 w-4" />
+                Write the first review <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>
           </div>
@@ -159,8 +159,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-warm-border bg-warm-card p-12 text-center shadow-sm">
-            <p className="mb-2 font-display text-xl text-warm-text">{city}</p>
+          <div className="rounded-2xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-12 text-center shadow-lg">
+            <p className="mb-2 font-display text-2xl text-warm-text">{city}</p>
             <p className="text-sm leading-relaxed text-warm-muted">
               No reviewed properties here yet. Search a specific address to leave the first review.
             </p>
@@ -246,7 +246,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   <Link
                     key={r.id}
                     href={`/property/${p.id}`}
-                    className="flex flex-col gap-3 rounded-xl border border-warm-border bg-warm-card p-5 shadow-sm transition-shadow hover:shadow-md"
+                    className="group flex flex-col gap-3 rounded-xl border border-warm-border bg-warm-card p-5 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20 hover:-translate-y-1"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
@@ -257,7 +257,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       </div>
                       {score && (
                         <span
-                          className={`shrink-0 rounded-full px-2.5 py-0.5 text-sm font-bold ${scoreBadgeClass(score)}`}
+                          className={`shrink-0 rounded-lg px-2.5 py-1 text-sm font-black text-white shadow-sm ${scoreBadgeClass(score)}`}
                         >
                           {score.toFixed(1)}
                         </span>
@@ -288,7 +288,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             {QUICK_ACTIONS.map(({ title, desc, href, label, disabled }) => (
               <div
                 key={title}
-                className="flex flex-col gap-3 rounded-xl border border-warm-border bg-warm-card p-6 shadow-sm"
+                className="group flex flex-col gap-3 rounded-xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-6 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20"
               >
                 <div>
                   <h3 className="font-display mb-2 text-lg text-warm-text">

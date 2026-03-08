@@ -11,10 +11,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { updateProfile, updatePassword, updateEmail, deleteAccount } from '@/lib/supabase/settings-actions'
+import { updateProfile, updatePassword, updateEmail, updateMapProvider, deleteAccount } from '@/lib/supabase/settings-actions'
 import { toast } from 'sonner'
 import { User } from '@supabase/supabase-js'
 import { Trash2, Loader2 } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 type SettingsState = {
   error: string | null
@@ -26,10 +33,12 @@ const initialState: SettingsState = { error: null, success: null }
 interface SettingsFormProps {
   user: User
   displayName: string
+  mapProvider: 'mapbox' | 'google'
 }
 
-export function SettingsForm({ user, displayName: initialDisplayName }: SettingsFormProps) {
+export function SettingsForm({ user, displayName: initialDisplayName, mapProvider: initialMapProvider }: SettingsFormProps) {
   const [displayName, setDisplayName] = useState(initialDisplayName)
+  const [mapProvider, setMapProvider] = useState<'mapbox' | 'google'>(initialMapProvider)
   const [newEmail, setNewEmail] = useState('')
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -38,6 +47,7 @@ export function SettingsForm({ user, displayName: initialDisplayName }: Settings
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
 
   const [profileState, profileAction, profilePending] = useActionState(updateProfile, initialState)
+  const [mapState, mapAction, mapPending] = useActionState(updateMapProvider, initialState)
   const [passwordState, passwordAction, passwordPending] = useActionState(updatePassword, initialState)
   const [emailState, emailAction, emailPending] = useActionState(updateEmail, initialState)
   const [deleteState, deleteAction, deletePending] = useActionState(deleteAccount, initialState)
@@ -58,6 +68,10 @@ export function SettingsForm({ user, displayName: initialDisplayName }: Settings
     toast.success(emailState.success)
     setNewEmail('')
     emailState.success = null
+  }
+  if (mapState.success) {
+    toast.success(mapState.success)
+    mapState.success = null
   }
 
   return (
@@ -152,6 +166,56 @@ export function SettingsForm({ user, displayName: initialDisplayName }: Settings
             >
               {emailPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Update Email
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Map Settings */}
+      <Card className="border-warm-border bg-warm-card">
+        <CardHeader>
+          <CardTitle className="text-warm-text">Map Settings</CardTitle>
+          <CardDescription className="text-warm-muted">
+            Choose your preferred map provider
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={mapAction} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="map_provider" className="text-warm-text">
+                Map Provider
+              </Label>
+              <Select value={mapProvider} onValueChange={(value) => setMapProvider(value as 'mapbox' | 'google')}>
+                <SelectTrigger
+                  id="map_provider"
+                  className="border-warm-border bg-warm-bg text-warm-text w-full"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mapbox">Mapbox</SelectItem>
+                  <SelectItem value="google">Google Maps</SelectItem>
+                </SelectContent>
+              </Select>
+              <input type="hidden" name="map_provider" value={mapProvider} />
+              <p className="text-xs text-warm-muted">
+                Select which map provider to use when viewing properties on the map
+              </p>
+            </div>
+
+            {mapState.error && (
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+                {mapState.error}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              disabled={mapPending}
+              className="bg-warm-text text-warm-card hover:bg-warm-text/90"
+            >
+              {mapPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save Map Settings
             </Button>
           </form>
         </CardContent>

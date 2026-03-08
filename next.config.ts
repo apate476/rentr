@@ -32,12 +32,12 @@ const securityHeaders = [
       // Next.js requires unsafe-inline for styles; Tailwind v4 uses inline styles
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      // Scripts: self + Cloudflare Turnstile + Google Maps
-      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://maps.googleapis.com",
-      // Images: self + Supabase storage + Mapbox + data URIs
-      "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://*.mapbox.com",
+      // Scripts: self + Cloudflare Turnstile + Google Maps + Mapbox
+      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://maps.googleapis.com https://api.mapbox.com",
+      // Images: self + Supabase storage + Mapbox + Google Maps + data URIs
+      "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://*.mapbox.com https://maps.googleapis.com https://maps.gstatic.com https://*.googleapis.com https://*.gstatic.com",
       // API connections
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mapbox.com https://events.mapbox.com https://places.googleapis.com https://maps.googleapis.com https://challenges.cloudflare.com",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mapbox.com https://events.mapbox.com https://places.googleapis.com https://maps.googleapis.com https://maps.gstatic.com https://*.googleapis.com https://*.gstatic.com https://challenges.cloudflare.com",
       // Cloudflare Turnstile iframe
       'frame-src https://challenges.cloudflare.com',
       // Workers (Mapbox GL uses web workers)

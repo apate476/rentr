@@ -143,6 +143,59 @@ export async function updateEmail(
   }
 }
 
+export async function updateMapProvider(
+  prevState: SettingsState,
+  formData: FormData
+): Promise<SettingsState> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'You must be signed in to update map settings.', success: null }
+  }
+
+  const mapProvider = (formData.get('map_provider') as string)?.trim()
+
+  if (!mapProvider || (mapProvider !== 'mapbox' && mapProvider !== 'google')) {
+    return { error: 'Invalid map provider selected.', success: null }
+  }
+
+  // Update profile table
+  const { error: profileError } = await (supabase as any)
+    .from('profiles')
+    .update({ map_provider: mapProvider })
+    .eq('id', user.id)
+
+  if (profileError) {
+    console.error('Map provider update error:', profileError)
+    // Check if the column doesn't exist (migration not run)
+    const errorMessage = profileError.message || ''
+    const errorCode = (profileError as any).code || ''
+    
+    if (
+      errorCode === '42703' || // PostgreSQL: column does not exist
+      errorMessage.toLowerCase().includes('column') && 
+      errorMessage.toLowerCase().includes('map_provider') ||
+      errorMessage.toLowerCase().includes("does not exist")
+    ) {
+      return {
+        error: 'The map_provider column does not exist. Please run the database migration: rentr/supabase/migrations/20260307000000_map_settings.sql',
+        success: null,
+      }
+    }
+    return {
+      error: `Failed to update map settings: ${errorMessage || 'Unknown error'}. Please try again.`,
+      success: null,
+    }
+  }
+
+  revalidatePath('/settings')
+  revalidatePath('/map')
+  return { error: null, success: 'Map settings updated successfully!' }
+}
+
 export async function deleteAccount(
   prevState: SettingsState,
   formData: FormData

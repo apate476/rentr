@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import type { Database } from '@/types/database.types'
 import { ReviewList } from './review-list'
 import { AiSummary } from '@/components/ai-summary'
+import { CompareButton } from '@/components/compare/compare-button'
+import { createCitySlug } from '@/lib/community/utils'
 
 type PropertyRow = Database['public']['Tables']['properties']['Row']
 
@@ -21,16 +23,16 @@ const SCORE_CATEGORIES = [
 ] as const
 
 function scoreBadgeClass(score: number | null): string {
-  if (!score) return 'bg-slate-100 text-slate-400'
-  if (score >= 4) return 'bg-green-50 text-green-700'
-  if (score >= 3) return 'bg-amber-50 text-amber-700'
-  return 'bg-red-50 text-red-600'
+  if (!score) return 'bg-warm-secondary text-warm-muted'
+  if (score >= 4) return 'bg-green-500 text-white'
+  if (score >= 3) return 'bg-amber-400 text-white'
+  return 'bg-red-500 text-white'
 }
 
 function confidenceBadgeClass(level: 'Low' | 'Medium' | 'High'): string {
-  if (level === 'High') return 'bg-green-50 text-green-700'
-  if (level === 'Medium') return 'bg-amber-50 text-amber-700'
-  return 'bg-red-50 text-red-600'
+  if (level === 'High') return 'bg-green-500 text-white'
+  if (level === 'Medium') return 'bg-amber-400 text-white'
+  return 'bg-red-500 text-white'
 }
 
 function getConfidence(count: number): 'Low' | 'Medium' | 'High' {
@@ -120,9 +122,12 @@ export default async function PropertyPage({
             {property.address}
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            <p className="text-sm text-warm-muted">
+            <Link
+              href={`/city/${createCitySlug(property.city, property.state)}`}
+              className="text-sm text-warm-muted hover:text-warm-text transition-colors"
+            >
               {property.city}, {property.state} {property.zip ?? ''}
-            </p>
+            </Link>
             {property.property_type && (
               <span className="rounded-full border border-warm-border px-2.5 py-0.5 text-xs capitalize text-warm-muted">
                 {property.property_type}
@@ -134,7 +139,7 @@ export default async function PropertyPage({
         {/* Score block */}
         <div className="shrink-0 flex flex-col items-end gap-2">
           <span
-            className={`rounded-full px-5 py-2 text-3xl font-black ${scoreBadgeClass(property.avg_overall)}`}
+            className={`rounded-lg px-5 py-2 text-3xl font-black text-white shadow-lg ${scoreBadgeClass(property.avg_overall)}`}
           >
             {property.avg_overall ? property.avg_overall.toFixed(1) : '—'}
           </span>
@@ -144,13 +149,13 @@ export default async function PropertyPage({
           {property.review_count > 0 && (
             <div className="flex flex-wrap items-center justify-end gap-1.5">
               <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${confidenceBadgeClass(confidence)}`}
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium text-white shadow-sm ${confidenceBadgeClass(confidence)}`}
               >
                 {confidence} confidence
               </span>
               {wouldRentAgainPct !== null && (
                 <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${wouldRentAgainPct >= 60 ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}
+                  className={`rounded-lg px-2.5 py-1 text-xs font-medium text-white shadow-sm ${wouldRentAgainPct >= 60 ? 'bg-green-500' : 'bg-red-500'}`}
                 >
                   {wouldRentAgainPct}% would rent again
                 </span>
@@ -165,17 +170,17 @@ export default async function PropertyPage({
       {/* Score grid */}
       {property.review_count > 0 && (
         <>
-          <div className="mb-10 grid grid-cols-4 gap-4 rounded-xl border border-warm-border bg-warm-card p-6 shadow-sm">
+          <div className="mb-10 grid grid-cols-4 gap-4 rounded-xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/50 p-6 shadow-lg">
             {SCORE_CATEGORIES.map(({ key, label }) => {
               const val = property[key as keyof PropertyRow] as number | null
               return (
-                <div key={key} className="flex flex-col items-center gap-1.5 text-center">
+                <div key={key} className="flex flex-col items-center gap-2 text-center transition-transform hover:scale-105">
                   <span
-                    className={`rounded-full px-2.5 py-0.5 text-sm font-bold ${scoreBadgeClass(val)}`}
+                    className={`rounded-lg px-3 py-1.5 text-base font-black text-white shadow-md ${scoreBadgeClass(val)}`}
                   >
                     {val ? val.toFixed(1) : '—'}
                   </span>
-                  <span className="text-xs text-warm-muted">{label}</span>
+                  <span className="text-xs font-medium text-warm-text">{label}</span>
                 </div>
               )
             })}
@@ -193,18 +198,21 @@ export default async function PropertyPage({
       )}
 
       {/* CTA */}
-      <div className="mb-10">
-        {!user ? (
-          <Button asChild className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 px-6">
-            <Link href={`/login?redirectTo=/property/${id}/review`}>Sign in to write a review</Link>
-          </Button>
-        ) : hasReviewed ? (
-          <p className="text-sm text-warm-muted">You&apos;ve already reviewed this property.</p>
-        ) : (
-          <Button asChild className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 px-6">
-            <Link href={`/property/${id}/review`}>Write a review</Link>
-          </Button>
-        )}
+      <div className="mb-10 flex flex-wrap items-center gap-4">
+        <div>
+          {!user ? (
+            <Button asChild className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 px-6">
+              <Link href={`/login?redirectTo=/property/${id}/review`}>Sign in to write a review</Link>
+            </Button>
+          ) : hasReviewed ? (
+            <p className="text-sm text-warm-muted">You&apos;ve already reviewed this property.</p>
+          ) : (
+            <Button asChild className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 px-6">
+              <Link href={`/property/${id}/review`}>Write a review</Link>
+            </Button>
+          )}
+        </div>
+        <CompareButton propertyId={id} />
       </div>
 
       {/* Reviews */}

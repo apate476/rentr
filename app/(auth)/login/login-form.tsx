@@ -39,16 +39,22 @@ export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(signIn, initialState)
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 className="font-[family-name:var(--font-poppins)] text-2xl font-bold text-slate-900">
+    <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-lg">
+      <h1 className="font-display text-2xl font-bold text-warm-text">
         Welcome back
       </h1>
-      <p className="mb-6 mt-1 text-sm text-slate-500">Sign in to your Rentr account</p>
+      <p className="mb-6 mt-1 text-sm text-warm-muted">Sign in to your Rentr account</p>
 
       <div className="space-y-4">
         {/* Google OAuth */}
         <form action={signInWithGoogle}>
-          <Button type="submit" variant="outline" className="w-full rounded-full" size="lg">
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+          <Button 
+            type="submit" 
+            variant="outline" 
+            className="w-full rounded-lg border-warm-border text-warm-text hover:bg-warm-secondary transition-all" 
+            size="lg"
+          >
             <GoogleIcon />
             Continue with Google
           </Button>
@@ -57,10 +63,10 @@ export default function LoginForm() {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-slate-100" />
+            <span className="w-full border-t border-warm-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-slate-400">or</span>
+            <span className="bg-warm-card px-2 text-warm-muted">or</span>
           </div>
         </div>
 
@@ -75,7 +81,7 @@ export default function LoginForm() {
           )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-slate-700">Email</Label>
+            <Label htmlFor="email" className="text-warm-text">Email</Label>
             <Input
               id="email"
               name="email"
@@ -83,16 +89,16 @@ export default function LoginForm() {
               placeholder="you@example.com"
               autoComplete="email"
               required
-              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
+              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
             />
           </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-slate-700">Password</Label>
+              <Label htmlFor="password" className="text-warm-text">Password</Label>
               <Link
                 href="/forgot-password"
-                className="text-xs text-slate-400 hover:text-slate-700 transition-colors"
+                className="text-xs text-warm-muted hover:text-warm-text transition-colors"
               >
                 Forgot password?
               </Link>
@@ -104,18 +110,23 @@ export default function LoginForm() {
               placeholder="••••••••"
               autoComplete="current-password"
               required
-              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
+              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
             />
           </div>
 
-          <Button type="submit" disabled={isPending} className="w-full rounded-full" size="lg">
+          <Button 
+            type="submit" 
+            disabled={isPending} 
+            className="w-full rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 transition-all hover:shadow-md" 
+            size="lg"
+          >
             {isPending ? 'Signing in…' : 'Sign in'}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-warm-muted">
           Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-primary font-medium hover:underline">
+          <Link href="/signup" className="text-warm-text font-medium hover:underline">
             Sign up
           </Link>
         </p>

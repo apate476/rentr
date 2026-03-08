@@ -52,7 +52,7 @@ export async function GET() {
     const cityMap = new Map<string, { city: string; state: string; reviewCount: number }>()
     
     if (topCitiesData) {
-      for (const prop of topCitiesData) {
+      for (const prop of topCitiesData as Array<{ city: string; state: string; review_count: number }>) {
         const key = `${prop.city}, ${prop.state}`
         const existing = cityMap.get(key)
         if (existing) {

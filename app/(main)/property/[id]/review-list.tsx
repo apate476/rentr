@@ -37,9 +37,9 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 ]
 
 function scoreBadgeClass(score: number): string {
-  if (score >= 4) return 'bg-green-50 text-green-700'
-  if (score >= 3) return 'bg-amber-50 text-amber-700'
-  return 'bg-red-50 text-red-600'
+  if (score >= 4) return 'bg-green-500 text-white'
+  if (score >= 3) return 'bg-amber-400 text-white'
+  return 'bg-red-500 text-white'
 }
 
 function borderClass(score: number): string {
@@ -77,8 +77,8 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
 
   if (reviews.length === 0) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-        <p className="text-sm text-slate-400">No reviews yet. Be the first to share your experience.</p>
+      <div className="rounded-2xl border border-warm-border bg-warm-card p-10 text-center shadow-lg">
+        <p className="text-sm text-warm-muted">No reviews yet. Be the first to share your experience.</p>
       </div>
     )
   }
@@ -90,13 +90,13 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
       <RatingDistribution reviews={reviews} />
 
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-slate-900">
+        <p className="text-sm font-semibold text-warm-text">
           {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
         </p>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="rounded-lg border border-warm-border bg-warm-card px-3 py-1.5 text-xs font-medium text-warm-text focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           {SORT_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
@@ -110,32 +110,32 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
         {sorted.map((review) => (
           <div
             key={review.id}
-            className={`rounded-2xl border border-slate-200 border-l-4 bg-white p-5 shadow-sm transition-shadow hover:shadow-md ${borderClass(review.score_overall)}`}
+            className={`group rounded-xl border border-warm-border border-l-4 bg-warm-card p-6 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20 ${borderClass(review.score_overall)}`}
           >
             {/* Top row: score + WRA + date */}
             <div className="mb-3 flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span
-                  className={`rounded-full px-2.5 py-0.5 text-sm font-bold ${scoreBadgeClass(review.score_overall)}`}
+                  className={`rounded-lg px-3 py-1 text-sm font-black text-white shadow-sm ${scoreBadgeClass(review.score_overall)}`}
                 >
                   {review.score_overall}/5
                 </span>
                 {review.would_rent_again !== null && (
                   <span
-                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${review.would_rent_again ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-medium text-white shadow-sm ${review.would_rent_again ? 'bg-green-500' : 'bg-red-500'}`}
                   >
                     {review.would_rent_again ? 'Would rent again' : 'Would not rent again'}
                   </span>
                 )}
               </div>
-              <span className="shrink-0 text-xs text-slate-400">
+              <span className="shrink-0 text-xs text-warm-muted">
                 Anonymous Tenant · {formatDate(review.created_at)}
               </span>
             </div>
 
             {/* Tenancy metadata */}
             {(review.move_in_year || review.rent_amount) && (
-              <p className="mb-3 text-xs text-slate-400">
+              <p className="mb-3 text-xs text-warm-muted">
                 {review.move_in_year && (
                   <>
                     {review.move_in_year}
@@ -149,13 +149,13 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
             )}
 
             {/* Review body */}
-            <p className="text-sm leading-relaxed text-slate-700">
+            <p className="text-sm leading-relaxed text-warm-text">
               &ldquo;{review.body}&rdquo;
             </p>
 
             {/* Helpful count */}
             {review.helpful_count > 0 && (
-              <p className="mt-3 text-xs text-slate-400">
+              <p className="mt-3 text-xs text-warm-muted">
                 {review.helpful_count} {review.helpful_count === 1 ? 'person' : 'people'} found
                 this helpful
               </p>

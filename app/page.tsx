@@ -10,21 +10,21 @@ import { createClient } from '@/lib/supabase/server'
 const STEPS = [
   {
     icon: Search,
-    title: 'Search any address',
+    title: 'Search for a property',
     description:
-      'Type in any property address or city to find reviews from real tenants who lived there.',
+      'Type in any property address, building name, city, neighborhood, or zip code to find reviews from real renters who lived there.',
   },
   {
     icon: Eye,
-    title: 'Read honest reviews',
+    title: 'Read renter experiences',
     description:
-      'See scores across 9 categories, AI-powered summaries, and detailed tenant experiences.',
+      'See scores across 9 categories, anonymous reviews, and detailed experiences about noise, pests, landlord responsiveness, and more.',
   },
   {
     icon: Shield,
-    title: 'Make informed decisions',
+    title: 'Avoid signing a bad lease',
     description:
-      'Know about noise, pests, landlord responsiveness, and more — before you sign anything.',
+      'Know exactly what you&apos;re getting into before you sign — from recurring red flags to hidden gems.',
   },
 ]
 
@@ -219,12 +219,11 @@ export default async function HomePage() {
             </div>
 
             <h1 className="mt-6 font-display text-5xl leading-[1.1] tracking-tight text-warm-text sm:text-7xl animate-in fade-in slide-in-from-bottom-4 duration-700">
-              Don&apos;t sign blind.
+              Find out what it&apos;s really like to live there.
             </h1>
 
             <p className="mt-4 max-w-lg text-lg leading-relaxed text-warm-muted animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-              Search any rental property. Read anonymous reviews from real tenants. Know exactly
-              what you&apos;re getting into.
+              Anonymous renter reviews, real property scores, and recurring red flags — all before you sign a lease.
             </p>
 
             {/* Enhanced search section */}
@@ -233,7 +232,7 @@ export default async function HomePage() {
             </div>
 
             <p className="mt-4 text-xs text-warm-muted animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-              Try &ldquo;Portland&rdquo; or &ldquo;742 Evergreen Terrace&rdquo;
+              Search for an address, building, or city
             </p>
 
             {/* Quick action buttons for logged-in users */}
@@ -278,9 +277,9 @@ export default async function HomePage() {
         <section id="how-it-works" className="border-b border-warm-border bg-warm-bg">
           <div className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
             <div className="text-center">
-              <h2 className="font-display text-3xl text-warm-text">How rentr works</h2>
+              <h2 className="font-display text-3xl text-warm-text">How the platform works</h2>
               <p className="mt-2 text-sm text-warm-muted">
-                Three steps to never renting blind again.
+                Three simple steps to make confident housing decisions.
               </p>
             </div>
 
@@ -288,12 +287,12 @@ export default async function HomePage() {
               {STEPS.map((step, i) => (
                 <div 
                   key={step.title} 
-                  className="group relative text-center pt-16 transition-all hover:scale-105"
+                  className="group relative text-center transition-all hover:scale-105"
                 >
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 select-none font-display text-6xl text-warm-secondary/30 -z-10 transition-opacity group-hover:opacity-50">
+                  <div className="mb-4 select-none font-display text-5xl font-black text-warm-text transition-colors group-hover:text-warm-text/90">
                     {i + 1}
                   </div>
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-warm-secondary relative z-10 transition-all group-hover:bg-warm-text group-hover:shadow-lg">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-warm-secondary transition-all group-hover:bg-warm-text group-hover:shadow-lg">
                     <step.icon className="h-6 w-6 text-warm-text transition-colors group-hover:text-warm-card" />
                   </div>
                   <h3 className="mt-4 font-display text-lg text-warm-text transition-colors group-hover:text-warm-text/90">
@@ -406,6 +405,30 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Community Messaging Section */}
+        <section className="border-t border-warm-border bg-gradient-to-b from-warm-bg to-warm-secondary/20">
+          <div className="mx-auto max-w-5xl px-6 py-16 text-center sm:py-20">
+            <h2 className="font-display text-3xl text-warm-text">Your renter community is here.</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-warm-muted">
+              Thousands of renters are sharing honest experiences to help each other avoid bad leases.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-warm-muted">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <span>Anonymous participation</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <span>Renter-first information</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <span>Peer insights over marketing claims</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Enhanced CTA with user state awareness */}
         <section className="border-t border-warm-border bg-gradient-to-b from-warm-card to-warm-secondary/30">
           <div className="mx-auto max-w-5xl px-6 py-16 text-center sm:py-20">
@@ -415,16 +438,10 @@ export default async function HomePage() {
             </div>
             
             <h2 className="font-display text-3xl text-warm-text">
-              {user 
-                ? "Share your rental experience" 
-                : "Write the review you wish you'd had"
-              }
+              Write the review you wish you had before moving in.
             </h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-warm-muted">
-              {user
-                ? "Your anonymous review helps the next person avoid a bad lease — or find a hidden gem."
-                : "Your anonymous review helps the next person avoid a bad lease — or find a hidden gem."
-              }
+              Your anonymous review helps the next renter avoid a bad lease — or discover a hidden gem.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               {user ? (
@@ -446,8 +463,8 @@ export default async function HomePage() {
                     className="rounded-lg border-warm-border px-6 text-warm-text transition-all hover:bg-warm-secondary hover:shadow-md"
                   >
                     <Link href="/search" className="flex items-center gap-2">
-                      <Search className="h-4 w-4" />
-                      Browse Reviews
+                      <MessageSquare className="h-4 w-4" />
+                      Browse renter discussions
                     </Link>
                   </Button>
                 </>
@@ -470,8 +487,8 @@ export default async function HomePage() {
                     className="rounded-lg border-warm-border px-6 text-warm-text transition-all hover:bg-warm-secondary hover:shadow-md"
                   >
                     <Link href="/search" className="flex items-center gap-2">
-                      <Search className="h-4 w-4" />
-                      Browse Reviews
+                      <MessageSquare className="h-4 w-4" />
+                      Browse renter discussions
                     </Link>
                   </Button>
                 </>

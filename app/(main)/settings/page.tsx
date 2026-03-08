@@ -13,7 +13,7 @@ export default async function SettingsPage() {
   // Get profile data
   const { data: profile } = await (supabase as any)
     .from('profiles')
-    .select('display_name')
+    .select('display_name, map_provider')
     .eq('id', user.id)
     .single()
 
@@ -27,6 +27,7 @@ export default async function SettingsPage() {
       <SettingsForm
         user={user}
         displayName={profile?.display_name || user.user_metadata?.full_name || ''}
+        mapProvider={(profile?.map_provider as 'mapbox' | 'google') || 'mapbox'}
       />
     </div>
   )

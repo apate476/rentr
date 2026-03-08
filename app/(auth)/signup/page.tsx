@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,21 +32,29 @@ const GoogleIcon = () => (
 )
 
 export default function SignupPage() {
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirectTo') || '/'
   const [state, formAction, isPending] = useActionState(signUp, initialState)
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 className="font-[family-name:var(--font-poppins)] text-2xl font-bold text-slate-900">
+    <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-lg">
+      <h1 className="font-display text-2xl font-bold text-warm-text">
         Create an account
       </h1>
-      <p className="mb-6 mt-1 text-sm text-slate-500">
+      <p className="mb-6 mt-1 text-sm text-warm-muted">
         Start leaving honest reviews for renters like you
       </p>
 
       <div className="space-y-4">
         {/* Google OAuth */}
         <form action={signInWithGoogle}>
-          <Button type="submit" variant="outline" className="w-full rounded-full" size="lg">
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+          <Button 
+            type="submit" 
+            variant="outline" 
+            className="w-full rounded-lg border-warm-border text-warm-text hover:bg-warm-secondary transition-all" 
+            size="lg"
+          >
             <GoogleIcon />
             Continue with Google
           </Button>
@@ -54,21 +63,22 @@ export default function SignupPage() {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-slate-100" />
+            <span className="w-full border-t border-warm-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-slate-400">or</span>
+            <span className="bg-warm-card px-2 text-warm-muted">or</span>
           </div>
         </div>
 
         {/* Email/Password form */}
         <form action={formAction} className="space-y-4">
+          <input type="hidden" name="redirectTo" value={redirectTo} />
           {state.error && (
             <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{state.error}</p>
           )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="full_name" className="text-slate-700">Full name</Label>
+            <Label htmlFor="full_name" className="text-warm-text">Full name</Label>
             <Input
               id="full_name"
               name="full_name"
@@ -76,12 +86,12 @@ export default function SignupPage() {
               placeholder="Jane Smith"
               autoComplete="name"
               required
-              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
+              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-slate-700">Email</Label>
+            <Label htmlFor="email" className="text-warm-text">Email</Label>
             <Input
               id="email"
               name="email"
@@ -89,12 +99,12 @@ export default function SignupPage() {
               placeholder="you@example.com"
               autoComplete="email"
               required
-              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
+              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-slate-700">Password</Label>
+            <Label htmlFor="password" className="text-warm-text">Password</Label>
             <Input
               id="password"
               name="password"
@@ -103,25 +113,30 @@ export default function SignupPage() {
               autoComplete="new-password"
               minLength={8}
               required
-              className="rounded-lg border-slate-200 focus-visible:ring-primary/20"
+              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
             />
           </div>
 
-          <Button type="submit" disabled={isPending} className="w-full rounded-full" size="lg">
+          <Button 
+            type="submit" 
+            disabled={isPending} 
+            className="w-full rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 transition-all hover:shadow-md" 
+            size="lg"
+          >
             {isPending ? 'Creating account…' : 'Create account'}
           </Button>
 
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-warm-muted">
             By creating an account, you agree to our{' '}
-            <Link href="/terms" className="underline hover:text-slate-700 transition-colors">Terms</Link>
+            <Link href="/terms" className="underline hover:text-warm-text transition-colors">Terms</Link>
             {' '}and{' '}
-            <Link href="/privacy" className="underline hover:text-slate-700 transition-colors">Privacy Policy</Link>.
+            <Link href="/privacy" className="underline hover:text-warm-text transition-colors">Privacy Policy</Link>.
           </p>
         </form>
 
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-warm-muted">
           Already have an account?{' '}
-          <Link href="/login" className="text-primary font-medium hover:underline">
+          <Link href="/login" className="text-warm-text font-medium hover:underline">
             Sign in
           </Link>
         </p>

@@ -115,20 +115,20 @@ export function AddressSearch() {
       </form>
 
       {open && suggestions.length > 0 && (
-        <ul className="bg-card absolute top-full z-50 mt-2 w-full overflow-hidden rounded-2xl border shadow-lg">
+        <ul className="bg-warm-card border-warm-border absolute top-full z-50 mt-2 w-full overflow-hidden rounded-xl border shadow-lg">
           {suggestions.map((s, i) => (
             <li key={s.placeId}>
               <button
                 type="button"
                 className={`flex w-full items-center justify-between px-5 py-3 text-left text-sm transition-colors ${
-                  i === activeIndex ? 'bg-accent' : 'hover:bg-accent/50'
+                  i === activeIndex ? 'bg-warm-secondary text-warm-text' : 'hover:bg-warm-secondary/50 text-warm-text'
                 }`}
                 onMouseEnter={() => setActiveIndex(i)}
                 onClick={() => selectSuggestion(s)}
               >
                 <span className="truncate">{s.text}</span>
                 {s.isCity && (
-                  <span className="text-muted-foreground ml-3 shrink-0 rounded-full border px-2 py-0.5 text-xs">
+                  <span className="text-warm-muted ml-3 shrink-0 rounded-lg border border-warm-border bg-warm-secondary px-2 py-0.5 text-xs">
                     City
                   </span>
                 )}

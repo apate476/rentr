@@ -16,7 +16,7 @@ export function ForgotPasswordForm() {
   const [state, formAction, isPending] = useActionState(resetPassword, initialState)
 
   return (
-    <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-sm">
+    <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-lg">
       <div className="mb-6">
         <Link
           href="/login"
@@ -77,7 +77,7 @@ export function ForgotPasswordForm() {
 
           <p className="text-center text-sm text-warm-muted">
             Remember your password?{' '}
-            <Link href="/login" className="text-primary font-medium hover:underline">
+            <Link href="/login" className="text-warm-text font-medium hover:underline">
               Sign in
             </Link>
           </p>

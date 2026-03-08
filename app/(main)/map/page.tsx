@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapView } from '@/components/map/map-view'
+import { UnifiedMapView } from '@/components/map/unified-map-view'
 import { MapSidebar } from '@/components/map/map-sidebar'
 import { MapErrorBoundary } from '@/components/map/map-error-boundary'
 import { Button } from '@/components/ui/button'
@@ -90,7 +90,7 @@ export default function MapPage() {
       {/* Map - 80% width on desktop, full width on mobile */}
       <div className="flex-1 lg:w-4/5 relative">
         <MapErrorBoundary>
-          <MapView onBoundsChange={handleBoundsChange} onPropertyClick={handlePropertyClick} />
+          <UnifiedMapView onBoundsChange={handleBoundsChange} onPropertyClick={handlePropertyClick} />
         </MapErrorBoundary>
       </div>
     </div>

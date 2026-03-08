@@ -14,16 +14,16 @@ interface ReviewCardProps {
 }
 
 function scoreBadgeClass(score: number): string {
-  if (score >= 4) return 'bg-green-50 text-green-700'
-  if (score >= 3) return 'bg-amber-50 text-amber-700'
-  return 'bg-red-50 text-red-600'
+  if (score >= 4) return 'bg-green-500 text-white'
+  if (score >= 3) return 'bg-amber-400 text-white'
+  return 'bg-red-500 text-white'
 }
 
 export function ReviewCard({ review, onView, onEdit, onDelete }: ReviewCardProps) {
   const { property, scoreOverall, bodyExcerpt, helpfulVotes, createdAt, photoCount } = review
 
   return (
-    <div className="min-h-[120px] rounded-xl border border-warm-border bg-warm-card p-4 shadow-sm transition-shadow hover:shadow-md">
+    <div className="min-h-[120px] rounded-xl border border-warm-border bg-warm-card p-5 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <Link
@@ -40,7 +40,7 @@ export function ReviewCard({ review, onView, onEdit, onDelete }: ReviewCardProps
           </Link>
 
           <div className="flex items-center gap-3 mt-3">
-            <span className={`rounded-full px-3 py-1 text-sm font-bold ${scoreBadgeClass(scoreOverall)}`}>
+            <span className={`rounded-lg px-3 py-1 text-sm font-black text-white shadow-sm ${scoreBadgeClass(scoreOverall)}`}>
               {formatScore(scoreOverall)}
             </span>
             <span className="text-sm text-warm-muted">

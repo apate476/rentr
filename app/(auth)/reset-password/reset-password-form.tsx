@@ -21,7 +21,7 @@ export function ResetPasswordForm() {
 
   if (state.success) {
     return (
-      <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-sm">
+      <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-lg">
         <div className="mb-6 text-center">
           <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-600" />
           <h1 className="font-display text-2xl font-bold text-warm-text">Password Reset</h1>
