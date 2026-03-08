@@ -6,22 +6,22 @@ import { buildSummaryPrompt } from '@/lib/ai/prompts'
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+    const { property_id } = await req.json()
+    if (!property_id) return NextResponse.json({ error: 'Missing property_id' }, { status: 400 })
 
     const redis = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL!,
       token: process.env.UPSTASH_REDIS_REST_TOKEN!,
     })
 
-    const { property_id } = await req.json()
-    if (!property_id) return NextResponse.json({ error: 'Missing property_id' }, { status: 400 })
-
     const cacheKey = `ai:summary:${property_id}`
     const cached = await redis.get<object>(cacheKey)
     if (cached) return NextResponse.json(cached)
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
 
     const { data: reviews } = await supabase
       .from('reviews')

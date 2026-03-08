@@ -112,7 +112,11 @@ export function ImpactCard() {
           <p className="text-warm-muted mb-1 text-sm font-medium">Engagement</p>
           <p className="text-warm-text text-sm">
             {data.reviewsWithVotes} of{' '}
-            {formatNumber(data.reviewsWithVotes + (data.reviewsWithVotesPercentage === 0 ? 1 : 0))}{' '}
+            {formatNumber(
+              data.reviewsWithVotesPercentage > 0
+                ? Math.round(data.reviewsWithVotes / data.reviewsWithVotesPercentage)
+                : data.reviewsWithVotes || 0
+            )}{' '}
             reviews have votes ({formatPercentage(data.reviewsWithVotesPercentage, 1)})
           </p>
         </div>

@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+const POLICY_REVISION_DATE = new Date('2024-01-01')
+
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
@@ -11,7 +13,7 @@ export default function PrivacyPage() {
 
       <h1 className="font-display text-warm-text mb-2 text-4xl">Privacy Policy</h1>
       <p className="text-warm-muted mb-12 text-sm">
-        Last updated: {new Date().toLocaleDateString()}
+        Last updated: {POLICY_REVISION_DATE.toLocaleDateString()}
       </p>
 
       <div className="prose prose-warm text-warm-text max-w-none space-y-8">

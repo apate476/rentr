@@ -55,6 +55,8 @@ export default function MapPage() {
         onClick={() => setSidebarOpen(!sidebarOpen)}
         className="bg-warm-text text-warm-card hover:bg-warm-text/90 fixed top-20 left-4 z-40 shadow-lg lg:hidden"
         size="sm"
+        aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+        aria-expanded={sidebarOpen}
       >
         {sidebarOpen ? <X className="h-4 w-4" /> : <List className="h-4 w-4" />}
       </Button>
@@ -73,6 +75,7 @@ export default function MapPage() {
             className="bg-warm-text text-warm-card hover:bg-warm-text/90 absolute top-4 right-4 lg:hidden"
             size="sm"
             variant="ghost"
+            aria-label="Close sidebar"
           >
             <X className="h-4 w-4" />
           </Button>
