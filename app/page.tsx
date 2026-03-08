@@ -21,6 +21,8 @@ import { EnhancedStats } from '@/components/home/enhanced-stats'
 import { DiscoveryModules } from '@/components/home/discovery-modules'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 const STEPS = [
   {
     icon: Search,
