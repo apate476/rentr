@@ -16,9 +16,9 @@ interface StatsCardProps {
 export function StatsCard({ label, value, trend, icon, isLoading }: StatsCardProps) {
   if (isLoading) {
     return (
-      <div className="min-h-[140px] rounded-2xl border border-warm-border bg-warm-card p-6 shadow-sm">
-        <Skeleton className="h-4 w-24 mb-4" />
-        <Skeleton className="h-8 w-32 mb-2" />
+      <div className="border-warm-border bg-warm-card min-h-[140px] rounded-2xl border p-6 shadow-sm">
+        <Skeleton className="mb-4 h-4 w-24" />
+        <Skeleton className="mb-2 h-8 w-32" />
         <Skeleton className="h-3 w-40" />
       </div>
     )
@@ -35,14 +35,14 @@ export function StatsCard({ label, value, trend, icon, isLoading }: StatsCardPro
     trend?.direction === 'up' ? TrendingUp : trend?.direction === 'down' ? TrendingDown : Minus
 
   return (
-    <div className="min-h-[140px] rounded-2xl border border-warm-border bg-warm-card p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-      <div className="flex items-start justify-between mb-4">
-        <p className="text-sm font-medium text-warm-muted">{label}</p>
+    <div className="border-warm-border bg-warm-card min-h-[140px] rounded-2xl border p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      <div className="mb-4 flex items-start justify-between">
+        <p className="text-warm-muted text-sm font-medium">{label}</p>
         {icon && <div className="text-warm-muted">{icon}</div>}
       </div>
 
       <div className="mb-2">
-        <p className="text-3xl font-bold text-warm-text font-display">
+        <p className="text-warm-text font-display text-3xl font-bold">
           {typeof value === 'number' ? formatNumber(value) : value}
         </p>
       </div>
@@ -51,8 +51,8 @@ export function StatsCard({ label, value, trend, icon, isLoading }: StatsCardPro
         <div className={`flex items-center gap-1 text-xs font-medium ${trendColor}`}>
           <TrendIcon className="h-3 w-3" />
           <span>
-            {trend.direction === 'up' ? '↑' : trend.direction === 'down' ? '↓' : '—'} {trend.percentage.toFixed(1)}%{' '}
-            {trend.period}
+            {trend.direction === 'up' ? '↑' : trend.direction === 'down' ? '↓' : '—'}{' '}
+            {trend.percentage.toFixed(1)}% {trend.period}
           </span>
         </div>
       )}

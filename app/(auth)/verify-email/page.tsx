@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button'
 
 export default function VerifyEmailPage() {
   return (
-    <Card className="border border-warm-border bg-warm-card text-center shadow-lg">
+    <Card className="border-warm-border bg-warm-card border text-center shadow-lg">
       <CardHeader className="space-y-1 pb-2">
         <div className="mb-2 text-5xl">✉️</div>
-        <CardTitle className="font-display text-2xl font-bold text-warm-text">
+        <CardTitle className="font-display text-warm-text text-2xl font-bold">
           Check your email
         </CardTitle>
-        <CardDescription className="text-base text-warm-muted">
+        <CardDescription className="text-warm-muted text-base">
           We sent a confirmation link to your inbox. Click it to activate your account.
         </CardDescription>
       </CardHeader>
@@ -24,10 +24,10 @@ export default function VerifyEmailPage() {
           .
         </p>
 
-        <Button 
-          asChild 
-          variant="outline" 
-          className="rounded-lg border-warm-border text-warm-text hover:bg-warm-secondary transition-all" 
+        <Button
+          asChild
+          variant="outline"
+          className="border-warm-border text-warm-text hover:bg-warm-secondary rounded-lg transition-all"
           size="lg"
         >
           <Link href="/login">Back to sign in</Link>

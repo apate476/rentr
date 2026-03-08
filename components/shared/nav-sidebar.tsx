@@ -48,7 +48,7 @@ export function NavSidebar({ user }: NavSidebarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-3 left-3 z-[60] bg-warm-card shadow-lg border border-warm-border hover:bg-warm-secondary transition-all duration-200"
+        className="bg-warm-card border-warm-border hover:bg-warm-secondary fixed top-3 left-3 z-[60] border shadow-lg transition-all duration-200"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
@@ -58,7 +58,7 @@ export function NavSidebar({ user }: NavSidebarProps) {
       {/* Backdrop overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-[45] transition-opacity duration-300"
+          className="fixed inset-0 z-[45] bg-black/50 transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -66,16 +66,16 @@ export function NavSidebar({ user }: NavSidebarProps) {
       {/* Slide-out Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen w-80 bg-warm-card border-r border-warm-border shadow-xl z-[50] transition-transform duration-300 ease-in-out',
+          'bg-warm-card border-warm-border fixed top-0 left-0 z-[50] h-screen w-80 border-r shadow-xl transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="px-6 py-5 border-b border-warm-border">
+          <div className="border-warm-border border-b px-6 py-5">
             <Link
               href="/"
-              className="font-display text-2xl text-warm-text hover:text-warm-text/80 transition-colors"
+              className="font-display text-warm-text hover:text-warm-text/80 text-2xl transition-colors"
               onClick={() => setIsOpen(false)}
             >
               rentr
@@ -84,13 +84,13 @@ export function NavSidebar({ user }: NavSidebarProps) {
 
           {/* Search - only show if signed in */}
           {user && (
-            <div className="px-4 py-4 border-b border-warm-border">
+            <div className="border-warm-border border-b px-4 py-4">
               <AddressSearch />
             </div>
           )}
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4">
             {navItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
@@ -100,7 +100,7 @@ export function NavSidebar({ user }: NavSidebarProps) {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all',
+                    'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all',
                     active
                       ? 'bg-warm-secondary text-warm-text shadow-sm'
                       : 'text-warm-muted hover:bg-warm-secondary hover:text-warm-text'

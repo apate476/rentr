@@ -10,20 +10,20 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-warm-bg">
+    <div className="bg-warm-bg min-h-screen">
       {/* Header matching homepage design */}
-      <header className="sticky top-0 z-50 border-b border-warm-border bg-warm-card/95 backdrop-blur-sm shadow-sm">
+      <header className="border-warm-border bg-warm-card/95 sticky top-0 z-50 border-b shadow-sm backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link 
-            href="/" 
-            className="font-display text-2xl text-warm-text transition-transform hover:scale-105"
+          <Link
+            href="/"
+            className="font-display text-warm-text text-2xl transition-transform hover:scale-105"
           >
             rentr
           </Link>
           <div className="flex items-center gap-4">
             <Link
               href="/map"
-              className="hidden items-center gap-1.5 text-sm font-medium text-warm-text transition-all hover:text-warm-text/80 hover:gap-2 sm:flex"
+              className="text-warm-text hover:text-warm-text/80 hidden items-center gap-1.5 text-sm font-medium transition-all hover:gap-2 sm:flex"
             >
               <MapPin className="h-4 w-4" />
               Browse Map
@@ -32,7 +32,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
               <Button
                 asChild
                 size="sm"
-                className="rounded-lg bg-warm-text px-5 text-warm-card hover:bg-warm-text/90 transition-all hover:shadow-md"
+                className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg px-5 transition-all hover:shadow-md"
               >
                 <Link href="/profile">My Reviews</Link>
               </Button>
@@ -42,14 +42,14 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
                   asChild
                   variant="ghost"
                   size="sm"
-                  className="hidden rounded-lg text-warm-text hover:bg-warm-secondary sm:flex"
+                  className="text-warm-text hover:bg-warm-secondary hidden rounded-lg sm:flex"
                 >
                   <Link href="/signup">Sign Up</Link>
                 </Button>
                 <Button
                   asChild
                   size="sm"
-                  className="rounded-lg bg-warm-text px-5 text-warm-card hover:bg-warm-text/90 transition-all hover:shadow-md"
+                  className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg px-5 transition-all hover:shadow-md"
                 >
                   <Link href="/login">Sign In</Link>
                 </Button>
@@ -61,9 +61,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
 
       {/* Auth content */}
       <main className="flex min-h-[calc(100vh-64px)] items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          {children}
-        </div>
+        <div className="w-full max-w-md">{children}</div>
       </main>
     </div>
   )

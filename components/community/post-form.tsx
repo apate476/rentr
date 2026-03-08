@@ -38,10 +38,13 @@ export function PostForm({ city, state, onSubmit, onCancel }: PostFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border border-warm-border bg-warm-card p-6">
+    <form
+      onSubmit={handleSubmit}
+      className="border-warm-border bg-warm-card space-y-5 rounded-xl border p-6"
+    >
       <div>
-        <h2 className="font-display text-xl font-semibold text-warm-text">Create a post</h2>
-        <p className="mt-1 text-sm text-warm-muted">
+        <h2 className="font-display text-warm-text text-xl font-semibold">Create a post</h2>
+        <p className="text-warm-muted mt-1 text-sm">
           Share your experience, ask questions, or help other renters in {city}, {state}
         </p>
       </div>
@@ -77,12 +80,12 @@ export function PostForm({ city, state, onSubmit, onCancel }: PostFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g., Looking for roommate in downtown area"
-          className="rounded-lg border-warm-border"
+          className="border-warm-border rounded-lg"
           minLength={10}
           maxLength={200}
           required
         />
-        <p className="text-xs text-warm-muted">
+        <p className="text-warm-muted text-xs">
           {title.length}/200 {title.length < 10 && '(minimum 10 characters)'}
         </p>
       </div>
@@ -97,12 +100,12 @@ export function PostForm({ city, state, onSubmit, onCancel }: PostFormProps) {
           onChange={(e) => setBody(e.target.value)}
           placeholder="Share your experience, ask questions, or provide advice..."
           rows={6}
-          className="w-full resize-none rounded-lg border border-warm-border bg-warm-card px-3 py-2 text-sm text-warm-text placeholder:text-warm-muted focus:outline-none focus:ring-2 focus:ring-warm-text/20"
+          className="border-warm-border bg-warm-card text-warm-text placeholder:text-warm-muted focus:ring-warm-text/20 w-full resize-none rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none"
           minLength={50}
           maxLength={5000}
           required
         />
-        <p className="text-xs text-warm-muted">
+        <p className="text-warm-muted text-xs">
           {body.length}/5000 {body.length < 50 && '(minimum 50 characters)'}
         </p>
       </div>
@@ -116,7 +119,7 @@ export function PostForm({ city, state, onSubmit, onCancel }: PostFormProps) {
         <Button
           type="submit"
           disabled={isSubmitting || title.length < 10 || body.length < 50}
-          className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90"
+          className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg"
         >
           {isSubmitting ? 'Posting...' : 'Post'}
         </Button>

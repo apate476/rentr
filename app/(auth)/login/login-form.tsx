@@ -39,20 +39,18 @@ export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(signIn, initialState)
 
   return (
-    <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-lg">
-      <h1 className="font-display text-2xl font-bold text-warm-text">
-        Welcome back
-      </h1>
-      <p className="mb-6 mt-1 text-sm text-warm-muted">Sign in to your Rentr account</p>
+    <div className="border-warm-border bg-warm-card rounded-2xl border p-8 shadow-lg">
+      <h1 className="font-display text-warm-text text-2xl font-bold">Welcome back</h1>
+      <p className="text-warm-muted mt-1 mb-6 text-sm">Sign in to your Rentr account</p>
 
       <div className="space-y-4">
         {/* Google OAuth */}
         <form action={signInWithGoogle}>
           <input type="hidden" name="redirectTo" value={redirectTo} />
-          <Button 
-            type="submit" 
-            variant="outline" 
-            className="w-full rounded-lg border-warm-border text-warm-text hover:bg-warm-secondary transition-all" 
+          <Button
+            type="submit"
+            variant="outline"
+            className="border-warm-border text-warm-text hover:bg-warm-secondary w-full rounded-lg transition-all"
             size="lg"
           >
             <GoogleIcon />
@@ -63,10 +61,10 @@ export default function LoginForm() {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-warm-border" />
+            <span className="border-warm-border w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-warm-card px-2 text-warm-muted">or</span>
+            <span className="bg-warm-card text-warm-muted px-2">or</span>
           </div>
         </div>
 
@@ -81,7 +79,9 @@ export default function LoginForm() {
           )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-warm-text">Email</Label>
+            <Label htmlFor="email" className="text-warm-text">
+              Email
+            </Label>
             <Input
               id="email"
               name="email"
@@ -89,16 +89,18 @@ export default function LoginForm() {
               placeholder="you@example.com"
               autoComplete="email"
               required
-              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
+              className="border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20 rounded-lg"
             />
           </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-warm-text">Password</Label>
+              <Label htmlFor="password" className="text-warm-text">
+                Password
+              </Label>
               <Link
                 href="/forgot-password"
-                className="text-xs text-warm-muted hover:text-warm-text transition-colors"
+                className="text-warm-muted hover:text-warm-text text-xs transition-colors"
               >
                 Forgot password?
               </Link>
@@ -110,21 +112,21 @@ export default function LoginForm() {
               placeholder="••••••••"
               autoComplete="current-password"
               required
-              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
+              className="border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20 rounded-lg"
             />
           </div>
 
-          <Button 
-            type="submit" 
-            disabled={isPending} 
-            className="w-full rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 transition-all hover:shadow-md" 
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="bg-warm-text text-warm-card hover:bg-warm-text/90 w-full rounded-lg transition-all hover:shadow-md"
             size="lg"
           >
             {isPending ? 'Signing in…' : 'Sign in'}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-warm-muted">
+        <p className="text-warm-muted text-center text-sm">
           Don&apos;t have an account?{' '}
           <Link href="/signup" className="text-warm-text font-medium hover:underline">
             Sign up

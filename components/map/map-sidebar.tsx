@@ -20,16 +20,16 @@ interface MapSidebarProps {
 export function MapSidebar({ properties, isLoading }: MapSidebarProps) {
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <p className="text-sm text-warm-muted">Loading properties...</p>
+      <div className="flex h-full items-center justify-center">
+        <p className="text-warm-muted text-sm">Loading properties...</p>
       </div>
     )
   }
 
   if (properties.length === 0) {
     return (
-      <div className="h-full flex items-center justify-center px-4">
-        <p className="text-sm text-warm-muted text-center">
+      <div className="flex h-full items-center justify-center px-4">
+        <p className="text-warm-muted text-center text-sm">
           No properties in this area. Pan or zoom to explore more.
         </p>
       </div>
@@ -38,12 +38,12 @@ export function MapSidebar({ properties, isLoading }: MapSidebarProps) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="p-4 space-y-3">
+      <div className="space-y-3 p-4">
         <div className="mb-2">
-          <h2 className="text-sm font-semibold text-warm-text">
+          <h2 className="text-warm-text text-sm font-semibold">
             {properties.length} {properties.length === 1 ? 'property' : 'properties'}
           </h2>
-          <p className="text-xs text-warm-muted mt-0.5">Visible on map</p>
+          <p className="text-warm-muted mt-0.5 text-xs">Visible on map</p>
         </div>
 
         {properties.map((property) => {
@@ -53,15 +53,15 @@ export function MapSidebar({ properties, isLoading }: MapSidebarProps) {
             <Link
               key={id}
               href={`/property/${id}`}
-              className="flex items-start justify-between gap-3 rounded-xl border border-warm-border bg-warm-card p-4 shadow-sm transition-shadow hover:shadow-md"
+              className="border-warm-border bg-warm-card flex items-start justify-between gap-3 rounded-xl border p-4 shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-sm text-warm-text">{address}</p>
-                <p className="mt-0.5 text-xs text-warm-muted truncate">
+                <p className="text-warm-text truncate text-sm font-medium">{address}</p>
+                <p className="text-warm-muted mt-0.5 truncate text-xs">
                   {city}, {state}
                 </p>
                 {review_count > 0 && (
-                  <p className="mt-1 text-xs text-warm-muted">
+                  <p className="text-warm-muted mt-1 text-xs">
                     {review_count} {review_count === 1 ? 'review' : 'reviews'}
                   </p>
                 )}

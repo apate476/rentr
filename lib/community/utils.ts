@@ -8,7 +8,10 @@ export function createCitySlug(city: string, state: string): string {
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-  const normalizedState = state.toLowerCase().trim().replace(/[^a-z0-9]+/g, '')
+  const normalizedState = state
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '')
   return `${normalizedCity}-${normalizedState}`
 }
 
@@ -23,9 +26,7 @@ export function parseCitySlug(slug: string): { city: string; state: string } | n
   // Last part is state (usually 2 chars), rest is city
   const state = parts[parts.length - 1].toUpperCase()
   const cityParts = parts.slice(0, -1)
-  const city = cityParts
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ')
+  const city = cityParts.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
 
   return { city, state }
 }

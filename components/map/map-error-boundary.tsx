@@ -30,13 +30,13 @@ export class MapErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex h-full w-full items-center justify-center bg-warm-bg p-6">
-          <div className="text-center max-w-md">
+        <div className="bg-warm-bg flex h-full w-full items-center justify-center p-6">
+          <div className="max-w-md text-center">
             <AlertCircle className="mx-auto mb-4 h-12 w-12 text-amber-600" />
-            <h2 className="font-display text-xl font-semibold text-warm-text mb-2">
+            <h2 className="font-display text-warm-text mb-2 text-xl font-semibold">
               Map unavailable
             </h2>
-            <p className="text-sm text-warm-muted mb-6">
+            <p className="text-warm-muted mb-6 text-sm">
               We&apos;re having trouble loading the map. This might be due to a network issue or
               missing configuration.
             </p>

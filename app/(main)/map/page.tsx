@@ -49,11 +49,11 @@ export default function MapPage() {
   )
 
   return (
-    <div className="flex h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] relative">
+    <div className="relative flex h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)]">
       {/* Mobile sidebar toggle button */}
       <Button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden fixed top-20 left-4 z-40 bg-warm-text text-warm-card hover:bg-warm-text/90 shadow-lg"
+        className="bg-warm-text text-warm-card hover:bg-warm-text/90 fixed top-20 left-4 z-40 shadow-lg lg:hidden"
         size="sm"
       >
         {sidebarOpen ? <X className="h-4 w-4" /> : <List className="h-4 w-4" />}
@@ -63,14 +63,14 @@ export default function MapPage() {
       <aside
         className={`${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-30 w-4/5 lg:w-1/5 border-r border-warm-border bg-warm-card overflow-hidden transition-transform duration-300`}
+        } border-warm-border bg-warm-card fixed inset-y-0 left-0 z-30 w-4/5 overflow-hidden border-r transition-transform duration-300 lg:static lg:w-1/5 lg:translate-x-0`}
       >
-        <div className="h-full relative">
+        <div className="relative h-full">
           <MapSidebar properties={properties} isLoading={isLoading} />
           {/* Close button for mobile */}
           <Button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden absolute top-4 right-4 bg-warm-text text-warm-card hover:bg-warm-text/90"
+            className="bg-warm-text text-warm-card hover:bg-warm-text/90 absolute top-4 right-4 lg:hidden"
             size="sm"
             variant="ghost"
           >
@@ -82,15 +82,18 @@ export default function MapPage() {
       {/* Overlay for mobile when sidebar is open */}
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-20"
+          className="fixed inset-0 z-20 bg-black/50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Map - 80% width on desktop, full width on mobile */}
-      <div className="flex-1 lg:w-4/5 relative">
+      <div className="relative flex-1 lg:w-4/5">
         <MapErrorBoundary>
-          <UnifiedMapView onBoundsChange={handleBoundsChange} onPropertyClick={handlePropertyClick} />
+          <UnifiedMapView
+            onBoundsChange={handleBoundsChange}
+            onPropertyClick={handlePropertyClick}
+          />
         </MapErrorBoundary>
       </div>
     </div>

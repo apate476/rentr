@@ -120,7 +120,7 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
         </div>
         <div className="h-1 overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-1 rounded-full bg-primary transition-all duration-300"
+            className="bg-primary h-1 rounded-full transition-all duration-300"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -171,18 +171,17 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
               type="checkbox"
               checked={stillLive}
               onChange={(e) => setStillLive(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 accent-primary"
+              className="accent-primary h-4 w-4 rounded border-slate-300"
             />
             I still live here
           </label>
 
           <div className="space-y-1.5">
             <Label className="text-slate-700">
-              Monthly rent{' '}
-              <span className="text-xs font-normal text-slate-400">(optional)</span>
+              Monthly rent <span className="text-xs font-normal text-slate-400">(optional)</span>
             </Label>
             <div className="relative max-w-[200px]">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+              <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-slate-400">
                 $
               </span>
               <Input
@@ -198,8 +197,7 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
 
           <div className="space-y-2">
             <Label className="text-slate-700">
-              Lease type{' '}
-              <span className="text-xs font-normal text-slate-400">(optional)</span>
+              Lease type <span className="text-xs font-normal text-slate-400">(optional)</span>
             </Label>
             <div className="flex flex-wrap gap-2">
               {LEASE_TYPES.map((lt) => (
@@ -264,7 +262,7 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
             placeholder="What was living here actually like? Describe the landlord, maintenance, neighbors, building condition…"
             rows={8}
             maxLength={2000}
-            className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="focus:ring-primary/20 w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:outline-none"
           />
           <div className="flex items-center justify-between">
             <span className={`text-xs ${body.length < 50 ? 'text-slate-400' : 'text-green-600'}`}>
@@ -278,7 +276,7 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
           {coachSuggestions.length > 0 && (
             <div className="space-y-2">
               <p className="flex items-center gap-1.5 text-xs text-slate-400">
-                <span className="rounded bg-primary px-1.5 py-0.5 font-[family-name:var(--font-poppins)] text-[10px] font-black uppercase tracking-wider text-white">
+                <span className="bg-primary rounded px-1.5 py-0.5 font-[family-name:var(--font-poppins)] text-[10px] font-black tracking-wider text-white uppercase">
                   AI
                 </span>
                 Writing suggestions
@@ -287,7 +285,7 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
                 {coachSuggestions.map((s) => (
                   <div
                     key={s}
-                    className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs text-primary"
+                    className="border-primary/20 bg-primary/5 text-primary flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs"
                   >
                     <span>{s}</span>
                     <button
@@ -296,7 +294,7 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
                         setDismissedSuggestions((prev) => new Set([...prev, s]))
                         setCoachSuggestions((prev) => prev.filter((x) => x !== s))
                       }}
-                      className="text-primary/40 transition-colors hover:text-primary"
+                      className="text-primary/40 hover:text-primary transition-colors"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -375,7 +373,7 @@ export function ReviewWizard({ action }: ReviewWizardProps) {
 
           {/* Preview card — matches review-list.tsx design */}
           <div
-            className={`rounded-2xl border border-slate-200 border-l-4 bg-white p-5 shadow-sm ${borderClass(scores.score_overall)}`}
+            className={`rounded-2xl border border-l-4 border-slate-200 bg-white p-5 shadow-sm ${borderClass(scores.score_overall)}`}
           >
             <div className="mb-3 flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">

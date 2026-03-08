@@ -39,7 +39,7 @@ export function CommentThread({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="font-display text-lg font-semibold text-warm-text">
+        <h3 className="font-display text-warm-text text-lg font-semibold">
           Comments ({comments.length})
         </h3>
       </div>
@@ -51,20 +51,20 @@ export function CommentThread({
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add a comment..."
             rows={3}
-            className="w-full resize-none rounded-lg border border-warm-border bg-warm-card px-3 py-2 text-sm text-warm-text placeholder:text-warm-muted focus:outline-none focus:ring-2 focus:ring-warm-text/20"
+            className="border-warm-border bg-warm-card text-warm-text placeholder:text-warm-muted focus:ring-warm-text/20 w-full resize-none rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none"
             minLength={10}
             maxLength={1000}
             required
           />
           <div className="flex items-center justify-between">
-            <p className="text-xs text-warm-muted">
+            <p className="text-warm-muted text-xs">
               {newComment.length}/1000 {newComment.length < 10 && '(minimum 10 characters)'}
             </p>
             <Button
               type="submit"
               disabled={isSubmitting || newComment.length < 10}
               size="sm"
-              className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90"
+              className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg"
             >
               {isSubmitting ? 'Posting...' : 'Post Comment'}
             </Button>
@@ -74,7 +74,7 @@ export function CommentThread({
 
       <div className="space-y-4">
         {comments.length === 0 ? (
-          <p className="text-sm text-warm-muted">No comments yet. Be the first to comment!</p>
+          <p className="text-warm-muted text-sm">No comments yet. Be the first to comment!</p>
         ) : (
           comments.map((comment) => {
             const authorName = comment.author_display_name || 'Anonymous Renter'
@@ -88,11 +88,11 @@ export function CommentThread({
             return (
               <div
                 key={comment.id}
-                className="rounded-lg border border-warm-border bg-warm-card p-4"
+                className="border-warm-border bg-warm-card rounded-lg border p-4"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-warm-muted">
-                    <span className="font-medium text-warm-text">{authorName}</span>
+                  <div className="text-warm-muted flex items-center gap-2 text-xs">
+                    <span className="text-warm-text font-medium">{authorName}</span>
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {date}
@@ -104,13 +104,13 @@ export function CommentThread({
                       variant="ghost"
                       size="sm"
                       onClick={() => onDeleteComment?.(comment.id)}
-                      className="h-6 px-2 text-xs text-warm-muted hover:text-red-600"
+                      className="text-warm-muted h-6 px-2 text-xs hover:text-red-600"
                     >
                       Delete
                     </Button>
                   )}
                 </div>
-                <p className="text-sm leading-relaxed text-warm-text">{comment.body}</p>
+                <p className="text-warm-text text-sm leading-relaxed">{comment.body}</p>
               </div>
             )
           })

@@ -32,7 +32,7 @@ export function SearchSortBar({ q, city, currentSort }: SearchSortBarProps) {
       <select
         value={currentSort}
         onChange={(e) => handleChange(e.target.value)}
-        className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+        className="focus:ring-primary/20 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 focus:ring-2 focus:outline-none"
       >
         {SORT_OPTIONS.map(({ value, label }) => (
           <option key={value} value={value}>

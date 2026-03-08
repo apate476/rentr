@@ -37,11 +37,9 @@ export default function SignupPage() {
   const [state, formAction, isPending] = useActionState(signUp, initialState)
 
   return (
-    <div className="rounded-2xl border border-warm-border bg-warm-card p-8 shadow-lg">
-      <h1 className="font-display text-2xl font-bold text-warm-text">
-        Create an account
-      </h1>
-      <p className="mb-6 mt-1 text-sm text-warm-muted">
+    <div className="border-warm-border bg-warm-card rounded-2xl border p-8 shadow-lg">
+      <h1 className="font-display text-warm-text text-2xl font-bold">Create an account</h1>
+      <p className="text-warm-muted mt-1 mb-6 text-sm">
         Start leaving honest reviews for renters like you
       </p>
 
@@ -49,10 +47,10 @@ export default function SignupPage() {
         {/* Google OAuth */}
         <form action={signInWithGoogle}>
           <input type="hidden" name="redirectTo" value={redirectTo} />
-          <Button 
-            type="submit" 
-            variant="outline" 
-            className="w-full rounded-lg border-warm-border text-warm-text hover:bg-warm-secondary transition-all" 
+          <Button
+            type="submit"
+            variant="outline"
+            className="border-warm-border text-warm-text hover:bg-warm-secondary w-full rounded-lg transition-all"
             size="lg"
           >
             <GoogleIcon />
@@ -63,10 +61,10 @@ export default function SignupPage() {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-warm-border" />
+            <span className="border-warm-border w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-warm-card px-2 text-warm-muted">or</span>
+            <span className="bg-warm-card text-warm-muted px-2">or</span>
           </div>
         </div>
 
@@ -78,7 +76,9 @@ export default function SignupPage() {
           )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="full_name" className="text-warm-text">Full name</Label>
+            <Label htmlFor="full_name" className="text-warm-text">
+              Full name
+            </Label>
             <Input
               id="full_name"
               name="full_name"
@@ -86,12 +86,14 @@ export default function SignupPage() {
               placeholder="Jane Smith"
               autoComplete="name"
               required
-              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
+              className="border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20 rounded-lg"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-warm-text">Email</Label>
+            <Label htmlFor="email" className="text-warm-text">
+              Email
+            </Label>
             <Input
               id="email"
               name="email"
@@ -99,12 +101,14 @@ export default function SignupPage() {
               placeholder="you@example.com"
               autoComplete="email"
               required
-              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
+              className="border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20 rounded-lg"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-warm-text">Password</Label>
+            <Label htmlFor="password" className="text-warm-text">
+              Password
+            </Label>
             <Input
               id="password"
               name="password"
@@ -113,28 +117,33 @@ export default function SignupPage() {
               autoComplete="new-password"
               minLength={8}
               required
-              className="rounded-lg border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20"
+              className="border-warm-border bg-warm-card text-warm-text focus-visible:ring-primary/20 rounded-lg"
             />
           </div>
 
-          <Button 
-            type="submit" 
-            disabled={isPending} 
-            className="w-full rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 transition-all hover:shadow-md" 
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="bg-warm-text text-warm-card hover:bg-warm-text/90 w-full rounded-lg transition-all hover:shadow-md"
             size="lg"
           >
             {isPending ? 'Creating account…' : 'Create account'}
           </Button>
 
-          <p className="text-center text-xs text-warm-muted">
+          <p className="text-warm-muted text-center text-xs">
             By creating an account, you agree to our{' '}
-            <Link href="/terms" className="underline hover:text-warm-text transition-colors">Terms</Link>
-            {' '}and{' '}
-            <Link href="/privacy" className="underline hover:text-warm-text transition-colors">Privacy Policy</Link>.
+            <Link href="/terms" className="hover:text-warm-text underline transition-colors">
+              Terms
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" className="hover:text-warm-text underline transition-colors">
+              Privacy Policy
+            </Link>
+            .
           </p>
         </form>
 
-        <p className="text-center text-sm text-warm-muted">
+        <p className="text-warm-muted text-center text-sm">
           Already have an account?{' '}
           <Link href="/login" className="text-warm-text font-medium hover:underline">
             Sign in
