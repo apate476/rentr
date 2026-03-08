@@ -1,11 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import type { Database } from '@/types/database.types'
-
-type Property = Database['public']['Tables']['properties']['Row']
 
 interface MapViewProps {
   onBoundsChange?: (bounds: { north: number; south: number; east: number; west: number }) => void
@@ -15,7 +12,6 @@ interface MapViewProps {
 export function MapView({ onBoundsChange, onPropertyClick }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
   const markersRef = useRef<mapboxgl.Marker[]>([])
   // Store callbacks in refs to prevent re-initialization on callback changes
   const boundsChangeRef = useRef(onBoundsChange)
@@ -42,7 +38,7 @@ export function MapView({ onBoundsChange, onPropertyClick }: MapViewProps) {
       tokenLength: mapboxToken?.length,
       tokenPrefix: mapboxToken?.substring(0, 10) + '...',
     })
-    
+
     if (!mapboxToken) {
       console.error('NEXT_PUBLIC_MAPBOX_TOKEN is not set')
       if (mapContainer.current) {
@@ -74,7 +70,6 @@ export function MapView({ onBoundsChange, onPropertyClick }: MapViewProps) {
 
       map.current.on('load', () => {
         console.log('Mapbox map loaded successfully')
-        setIsLoaded(true)
       })
 
       map.current.on('error', (e) => {
@@ -95,42 +90,48 @@ export function MapView({ onBoundsChange, onPropertyClick }: MapViewProps) {
       // Fetch and display pins
       fetch('/api/map/pins')
         .then((res) => res.json())
-        .then(({ data }: { data: Array<{ id: string; lat: number; lng: number; avg_overall: number | null }> }) => {
-          if (!map.current || !data) return
+        .then(
+          ({
+            data,
+          }: {
+            data: Array<{ id: string; lat: number; lng: number; avg_overall: number | null }>
+          }) => {
+            if (!map.current || !data) return
 
-          // Clear existing markers
-          markersRef.current.forEach((marker) => marker.remove())
-          markersRef.current = []
+            // Clear existing markers
+            markersRef.current.forEach((marker) => marker.remove())
+            markersRef.current = []
 
-          // Add markers for each property
-          data.forEach((property) => {
-            const el = document.createElement('div')
-            el.className = 'property-marker'
-            el.style.width = '24px'
-            el.style.height = '24px'
-            el.style.borderRadius = '50%'
-            el.style.backgroundColor = property.avg_overall
-              ? property.avg_overall >= 4
-                ? '#22c55e'
-                : property.avg_overall >= 3
-                  ? '#eab308'
-                  : '#ef4444'
-              : '#94a3b8'
-            el.style.border = '2px solid white'
-            el.style.cursor = 'pointer'
-            el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
+            // Add markers for each property
+            data.forEach((property) => {
+              const el = document.createElement('div')
+              el.className = 'property-marker'
+              el.style.width = '24px'
+              el.style.height = '24px'
+              el.style.borderRadius = '50%'
+              el.style.backgroundColor = property.avg_overall
+                ? property.avg_overall >= 4
+                  ? '#22c55e'
+                  : property.avg_overall >= 3
+                    ? '#eab308'
+                    : '#ef4444'
+                : '#94a3b8'
+              el.style.border = '2px solid white'
+              el.style.cursor = 'pointer'
+              el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
 
-            const marker = new mapboxgl.Marker(el)
-              .setLngLat([property.lng, property.lat])
-              .addTo(map.current!)
+              const marker = new mapboxgl.Marker(el)
+                .setLngLat([property.lng, property.lat])
+                .addTo(map.current!)
 
-            el.addEventListener('click', () => {
-              propertyClickRef.current?.(property.id)
+              el.addEventListener('click', () => {
+                propertyClickRef.current?.(property.id)
+              })
+
+              markersRef.current.push(marker)
             })
-
-            markersRef.current.push(marker)
-          })
-        })
+          }
+        )
         .catch((err) => {
           console.error('Failed to load map pins:', err)
         })
@@ -141,7 +142,7 @@ export function MapView({ onBoundsChange, onPropertyClick }: MapViewProps) {
 
         const bounds = map.current.getBounds()
         if (!bounds) return
-        
+
         boundsChangeRef.current?.({
           north: bounds.getNorth(),
           south: bounds.getSouth(),
@@ -181,9 +182,9 @@ export function MapView({ onBoundsChange, onPropertyClick }: MapViewProps) {
   }, []) // Empty dependency array - only initialize once
 
   return (
-    <div 
-      ref={mapContainer} 
-      className="h-full w-full" 
+    <div
+      ref={mapContainer}
+      className="h-full w-full"
       style={{ minHeight: '400px', height: '100%', width: '100%' }}
     />
   )

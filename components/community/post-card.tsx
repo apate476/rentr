@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { MessageSquare, ArrowUp, Clock } from 'lucide-react'
 import type { PostWithAuthor } from '@/types/community.types'
 import { getCategoryLabel, getCategoryColor } from '@/lib/community/utils'
-import { Button } from '@/components/ui/button'
 
 interface PostCardProps {
   post: PostWithAuthor
@@ -14,7 +13,9 @@ interface PostCardProps {
 
 export function PostCard({ post, onUpvote, showFullBody = false }: PostCardProps) {
   const authorName = post.author_display_name || 'Anonymous Renter'
-  const bodyPreview = showFullBody ? post.body : post.body.slice(0, 200) + (post.body.length > 200 ? '...' : '')
+  const bodyPreview = showFullBody
+    ? post.body
+    : post.body.slice(0, 200) + (post.body.length > 200 ? '...' : '')
   const date = new Date(post.created_at).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -24,7 +25,7 @@ export function PostCard({ post, onUpvote, showFullBody = false }: PostCardProps
   return (
     <Link
       href={`/post/${post.id}`}
-      className="group block rounded-xl border border-warm-border bg-warm-card p-5 transition-all hover:shadow-md hover:border-warm-text/20"
+      className="group border-warm-border bg-warm-card hover:border-warm-text/20 block rounded-xl border p-5 transition-all hover:shadow-md"
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -35,16 +36,16 @@ export function PostCard({ post, onUpvote, showFullBody = false }: PostCardProps
               {getCategoryLabel(post.category)}
             </span>
           </div>
-          <h3 className="font-display text-lg font-semibold text-warm-text group-hover:text-warm-text/80">
+          <h3 className="font-display text-warm-text group-hover:text-warm-text/80 text-lg font-semibold">
             {post.title}
           </h3>
         </div>
       </div>
 
-      <p className="mb-4 text-sm leading-relaxed text-warm-muted">{bodyPreview}</p>
+      <p className="text-warm-muted mb-4 text-sm leading-relaxed">{bodyPreview}</p>
 
-      <div className="flex items-center justify-between border-t border-warm-border pt-3">
-        <div className="flex items-center gap-4 text-xs text-warm-muted">
+      <div className="border-warm-border flex items-center justify-between border-t pt-3">
+        <div className="text-warm-muted flex items-center gap-4 text-xs">
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
             {date}
@@ -68,7 +69,7 @@ export function PostCard({ post, onUpvote, showFullBody = false }: PostCardProps
             <ArrowUp className="h-3 w-3" />
             {post.upvote_count}
           </button>
-          <span className="flex items-center gap-1.5 text-xs text-warm-muted">
+          <span className="text-warm-muted flex items-center gap-1.5 text-xs">
             <MessageSquare className="h-3 w-3" />
             {post.comment_count}
           </span>

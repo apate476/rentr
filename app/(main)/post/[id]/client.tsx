@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 
 interface PostDetailClientProps {
@@ -12,7 +11,11 @@ interface PostDetailClientProps {
   initialUpvoteCount: number
 }
 
-export function PostDetailClient({ postId, initialUpvoted, initialUpvoteCount }: PostDetailClientProps) {
+export function PostDetailClient({
+  postId,
+  initialUpvoted,
+  initialUpvoteCount,
+}: PostDetailClientProps) {
   const router = useRouter()
   const [upvoted, setUpvoted] = useState(initialUpvoted)
   const [upvoteCount, setUpvoteCount] = useState(initialUpvoteCount)

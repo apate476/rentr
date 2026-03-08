@@ -102,6 +102,7 @@ export function useDashboardReviews(filters: ReviewFilters = {}): UseDashboardRe
 
   useEffect(() => {
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filters.page,
     filters.limit,
@@ -126,7 +127,9 @@ interface UseDashboardActivityResult {
   refetch: () => Promise<void>
 }
 
-export function useDashboardActivity(period: '7d' | '30d' | '90d' | '1y' | 'all' = '30d'): UseDashboardActivityResult {
+export function useDashboardActivity(
+  period: '7d' | '30d' | '90d' | '1y' | 'all' = '30d'
+): UseDashboardActivityResult {
   const [data, setData] = useState<ActivityTimelineData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -153,6 +156,7 @@ export function useDashboardActivity(period: '7d' | '30d' | '90d' | '1y' | 'all'
 
   useEffect(() => {
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period])
 
   return { data, isLoading, error, refetch: fetchData }

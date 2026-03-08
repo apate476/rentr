@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { calculateTrend, calculateMonthsBetween, calculateImpactScore, type Trend } from '@/lib/dashboard/utils'
+import { calculateTrend, calculateMonthsBetween, calculateImpactScore } from '@/lib/dashboard/utils'
 import type { DashboardStats } from '@/types/dashboard.types'
 
 export async function GET() {
@@ -15,7 +15,11 @@ export async function GET() {
 
   try {
     // Get user's profile to find member since date
-    const { data: profile } = await supabase.from('profiles').select('created_at').eq('id', user.id).single()
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('created_at')
+      .eq('id', user.id)
+      .single()
     const profileData = profile as { created_at: string } | null
 
     // Total reviews
@@ -28,7 +32,12 @@ export async function GET() {
       throw reviewsError
     }
 
-    const reviewsArray = (reviews || []) as Array<{ id: string; score_overall: number; helpful_count: number; created_at: string }>
+    const reviewsArray = (reviews || []) as Array<{
+      id: string
+      score_overall: number
+      helpful_count: number
+      created_at: string
+    }>
     const totalReviews = reviewsArray.length
 
     // Total helpful votes
@@ -39,11 +48,15 @@ export async function GET() {
     const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
     const previous30Days = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
 
-    const recentVotes = reviewsArray.filter((r) => new Date(r.created_at) >= last30Days).reduce((sum, r) => sum + (r.helpful_count || 0), 0)
-    const previousVotes = reviewsArray.filter((r) => {
-      const date = new Date(r.created_at)
-      return date >= previous30Days && date < last30Days
-    }).reduce((sum, r) => sum + (r.helpful_count || 0), 0)
+    const recentVotes = reviewsArray
+      .filter((r) => new Date(r.created_at) >= last30Days)
+      .reduce((sum, r) => sum + (r.helpful_count || 0), 0)
+    const previousVotes = reviewsArray
+      .filter((r) => {
+        const date = new Date(r.created_at)
+        return date >= previous30Days && date < last30Days
+      })
+      .reduce((sum, r) => sum + (r.helpful_count || 0), 0)
 
     const helpfulVotesTrend = calculateTrend(recentVotes, previousVotes)
 
@@ -73,7 +86,10 @@ export async function GET() {
     const pioneerCount = pioneerProperties?.length || 0
 
     // Average score given
-    const avgScore = reviewsArray.length > 0 ? reviewsArray.reduce((sum, r) => sum + r.score_overall, 0) / reviewsArray.length : null
+    const avgScore =
+      reviewsArray.length > 0
+        ? reviewsArray.reduce((sum, r) => sum + r.score_overall, 0) / reviewsArray.length
+        : null
 
     // Reviews with votes
     const reviewsWithVotes = reviewsArray.filter((r) => (r.helpful_count || 0) > 0).length
@@ -84,7 +100,12 @@ export async function GET() {
     const tenureMonths = calculateMonthsBetween(memberSince)
 
     // Community impact score
-    const communityImpactScore = calculateImpactScore(totalHelpfulVotes, pioneerCount, reviewsWithVotes, totalReviews)
+    const communityImpactScore = calculateImpactScore(
+      totalHelpfulVotes,
+      pioneerCount,
+      reviewsWithVotes,
+      totalReviews
+    )
 
     const stats: DashboardStats = {
       totalReviews,

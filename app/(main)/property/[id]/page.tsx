@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import type { Database } from '@/types/database.types'
@@ -118,18 +117,16 @@ export default async function PropertyPage({
       {/* Header */}
       <div className="mb-10 flex items-start justify-between gap-6">
         <div className="min-w-0">
-          <h1 className="font-display text-4xl text-warm-text sm:text-5xl">
-            {property.address}
-          </h1>
+          <h1 className="font-display text-warm-text text-4xl sm:text-5xl">{property.address}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <Link
               href={`/city/${createCitySlug(property.city, property.state)}`}
-              className="text-sm text-warm-muted hover:text-warm-text transition-colors"
+              className="text-warm-muted hover:text-warm-text text-sm transition-colors"
             >
               {property.city}, {property.state} {property.zip ?? ''}
             </Link>
             {property.property_type && (
-              <span className="rounded-full border border-warm-border px-2.5 py-0.5 text-xs capitalize text-warm-muted">
+              <span className="border-warm-border text-warm-muted rounded-full border px-2.5 py-0.5 text-xs capitalize">
                 {property.property_type}
               </span>
             )}
@@ -137,13 +134,13 @@ export default async function PropertyPage({
         </div>
 
         {/* Score block */}
-        <div className="shrink-0 flex flex-col items-end gap-2">
+        <div className="flex shrink-0 flex-col items-end gap-2">
           <span
             className={`rounded-lg px-5 py-2 text-3xl font-black text-white shadow-lg ${scoreBadgeClass(property.avg_overall)}`}
           >
             {property.avg_overall ? property.avg_overall.toFixed(1) : '—'}
           </span>
-          <p className="text-xs text-warm-muted">
+          <p className="text-warm-muted text-xs">
             {property.review_count} {property.review_count === 1 ? 'review' : 'reviews'}
           </p>
           {property.review_count > 0 && (
@@ -165,27 +162,30 @@ export default async function PropertyPage({
         </div>
       </div>
 
-      <hr className="mb-10 border-warm-border" />
+      <hr className="border-warm-border mb-10" />
 
       {/* Score grid */}
       {property.review_count > 0 && (
         <>
-          <div className="mb-10 grid grid-cols-4 gap-4 rounded-xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/50 p-6 shadow-lg">
+          <div className="border-warm-border from-warm-card to-warm-secondary/50 mb-10 grid grid-cols-4 gap-4 rounded-xl border bg-gradient-to-br p-6 shadow-lg">
             {SCORE_CATEGORIES.map(({ key, label }) => {
               const val = property[key as keyof PropertyRow] as number | null
               return (
-                <div key={key} className="flex flex-col items-center gap-2 text-center transition-transform hover:scale-105">
+                <div
+                  key={key}
+                  className="flex flex-col items-center gap-2 text-center transition-transform hover:scale-105"
+                >
                   <span
                     className={`rounded-lg px-3 py-1.5 text-base font-black text-white shadow-md ${scoreBadgeClass(val)}`}
                   >
                     {val ? val.toFixed(1) : '—'}
                   </span>
-                  <span className="text-xs font-medium text-warm-text">{label}</span>
+                  <span className="text-warm-text text-xs font-medium">{label}</span>
                 </div>
               )
             })}
           </div>
-          <hr className="mb-10 border-warm-border" />
+          <hr className="border-warm-border mb-10" />
         </>
       )}
 
@@ -193,7 +193,7 @@ export default async function PropertyPage({
       {property.review_count > 0 && (
         <>
           <AiSummary propertyId={id} reviewCount={property.review_count ?? 0} />
-          <hr className="mb-10 border-warm-border" />
+          <hr className="border-warm-border mb-10" />
         </>
       )}
 
@@ -201,13 +201,21 @@ export default async function PropertyPage({
       <div className="mb-10 flex flex-wrap items-center gap-4">
         <div>
           {!user ? (
-            <Button asChild className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 px-6">
-              <Link href={`/login?redirectTo=/property/${id}/review`}>Sign in to write a review</Link>
+            <Button
+              asChild
+              className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg px-6"
+            >
+              <Link href={`/login?redirectTo=/property/${id}/review`}>
+                Sign in to write a review
+              </Link>
             </Button>
           ) : hasReviewed ? (
-            <p className="text-sm text-warm-muted">You&apos;ve already reviewed this property.</p>
+            <p className="text-warm-muted text-sm">You&apos;ve already reviewed this property.</p>
           ) : (
-            <Button asChild className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 px-6">
+            <Button
+              asChild
+              className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg px-6"
+            >
               <Link href={`/property/${id}/review`}>Write a review</Link>
             </Button>
           )}

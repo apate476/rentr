@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState } from 'react'
+import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ReviewWizard } from '@/app/(main)/property/[id]/review/review-wizard'
@@ -14,7 +14,7 @@ interface Props {
   placeId: string | null
 }
 
-export function NewPropertyWizard({ address, placeId: _ }: Props) {
+export function NewPropertyWizard({ address }: Props) {
   const [propertyType, setPropertyType] = useState('')
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
@@ -40,43 +40,41 @@ export function NewPropertyWizard({ address, placeId: _ }: Props) {
       <div className="space-y-6">
         {/* Address confirmation card */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-400">Address</p>
+          <p className="mb-1 text-xs font-bold tracking-wider text-slate-400 uppercase">Address</p>
           <p className="font-semibold text-slate-900">{address}</p>
           <p className="mt-0.5 text-xs text-slate-400">Be the first to share your experience.</p>
         </div>
 
         <div className="space-y-2">
           <p className="text-sm font-medium text-slate-800">
-            City, State, ZIP{' '}
-            <span className="text-xs font-normal text-red-400">* required</span>
+            City, State, ZIP <span className="text-xs font-normal text-red-400">* required</span>
           </p>
           <div className="grid grid-cols-3 gap-2">
             <input
               placeholder="City"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="col-span-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="focus:ring-primary/20 col-span-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:outline-none"
             />
             <input
               placeholder="ST"
               value={state}
               maxLength={2}
               onChange={(e) => setState(e.target.value.toUpperCase())}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="focus:ring-primary/20 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:outline-none"
             />
             <input
               placeholder="ZIP"
               value={zip}
               onChange={(e) => setZip(e.target.value)}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="focus:ring-primary/20 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:outline-none"
             />
           </div>
         </div>
 
         <div className="space-y-2">
           <p className="text-sm font-medium text-slate-800">
-            Property type{' '}
-            <span className="text-xs font-normal text-slate-400">(optional)</span>
+            Property type <span className="text-xs font-normal text-slate-400">(optional)</span>
           </p>
           <div className="flex flex-wrap gap-2">
             {PROPERTY_TYPES.map((t) => (

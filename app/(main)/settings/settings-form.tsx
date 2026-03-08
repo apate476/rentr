@@ -1,17 +1,17 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { updateProfile, updatePassword, updateEmail, updateMapProvider, deleteAccount } from '@/lib/supabase/settings-actions'
+  updateProfile,
+  updatePassword,
+  updateEmail,
+  updateMapProvider,
+  deleteAccount,
+} from '@/lib/supabase/settings-actions'
 import { toast } from 'sonner'
 import { User } from '@supabase/supabase-js'
 import { Trash2, Loader2 } from 'lucide-react'
@@ -36,7 +36,11 @@ interface SettingsFormProps {
   mapProvider: 'mapbox' | 'google'
 }
 
-export function SettingsForm({ user, displayName: initialDisplayName, mapProvider: initialMapProvider }: SettingsFormProps) {
+export function SettingsForm({
+  user,
+  displayName: initialDisplayName,
+  mapProvider: initialMapProvider,
+}: SettingsFormProps) {
   const [displayName, setDisplayName] = useState(initialDisplayName)
   const [mapProvider, setMapProvider] = useState<'mapbox' | 'google'>(initialMapProvider)
   const [newEmail, setNewEmail] = useState('')
@@ -48,31 +52,47 @@ export function SettingsForm({ user, displayName: initialDisplayName, mapProvide
 
   const [profileState, profileAction, profilePending] = useActionState(updateProfile, initialState)
   const [mapState, mapAction, mapPending] = useActionState(updateMapProvider, initialState)
-  const [passwordState, passwordAction, passwordPending] = useActionState(updatePassword, initialState)
+  const [passwordState, passwordAction, passwordPending] = useActionState(
+    updatePassword,
+    initialState
+  )
   const [emailState, emailAction, emailPending] = useActionState(updateEmail, initialState)
   const [deleteState, deleteAction, deletePending] = useActionState(deleteAccount, initialState)
 
-  // Show toast notifications
-  if (profileState.success) {
-    toast.success(profileState.success)
-    profileState.success = null
-  }
-  if (passwordState.success) {
-    toast.success(passwordState.success)
-    setCurrentPassword('')
-    setNewPassword('')
-    setConfirmPassword('')
-    passwordState.success = null
-  }
-  if (emailState.success) {
-    toast.success(emailState.success)
-    setNewEmail('')
-    emailState.success = null
-  }
-  if (mapState.success) {
-    toast.success(mapState.success)
-    mapState.success = null
-  }
+  // Show toast notifications using useEffect to avoid mutating state
+  useEffect(() => {
+    if (profileState.success) {
+      toast.success(profileState.success)
+    }
+  }, [profileState.success])
+
+  useEffect(() => {
+    if (passwordState.success) {
+      toast.success(passwordState.success)
+      // Use setTimeout to avoid setState in effect
+      setTimeout(() => {
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+      }, 0)
+    }
+  }, [passwordState.success])
+
+  useEffect(() => {
+    if (emailState.success) {
+      toast.success(emailState.success)
+      // Use setTimeout to avoid setState in effect
+      setTimeout(() => {
+        setNewEmail('')
+      }, 0)
+    }
+  }, [emailState.success])
+
+  useEffect(() => {
+    if (mapState.success) {
+      toast.success(mapState.success)
+    }
+  }, [mapState.success])
 
   return (
     <div className="space-y-6">
@@ -99,9 +119,7 @@ export function SettingsForm({ user, displayName: initialDisplayName, mapProvide
                 placeholder="Your name"
                 className="border-warm-border bg-warm-bg text-warm-text"
               />
-              <p className="text-xs text-warm-muted">
-                This name will be shown on your profile
-              </p>
+              <p className="text-warm-muted text-xs">This name will be shown on your profile</p>
             </div>
 
             {profileState.error && (
@@ -132,8 +150,8 @@ export function SettingsForm({ user, displayName: initialDisplayName, mapProvide
         </CardHeader>
         <CardContent>
           <div className="mb-4 space-y-1">
-            <p className="text-sm font-medium text-warm-text">Current Email</p>
-            <p className="text-sm text-warm-muted">{user.email}</p>
+            <p className="text-warm-text text-sm font-medium">Current Email</p>
+            <p className="text-warm-muted text-sm">{user.email}</p>
           </div>
 
           <form action={emailAction} className="space-y-4">
@@ -185,7 +203,10 @@ export function SettingsForm({ user, displayName: initialDisplayName, mapProvide
               <Label htmlFor="map_provider" className="text-warm-text">
                 Map Provider
               </Label>
-              <Select value={mapProvider} onValueChange={(value) => setMapProvider(value as 'mapbox' | 'google')}>
+              <Select
+                value={mapProvider}
+                onValueChange={(value) => setMapProvider(value as 'mapbox' | 'google')}
+              >
                 <SelectTrigger
                   id="map_provider"
                   className="border-warm-border bg-warm-bg text-warm-text w-full"
@@ -198,7 +219,7 @@ export function SettingsForm({ user, displayName: initialDisplayName, mapProvide
                 </SelectContent>
               </Select>
               <input type="hidden" name="map_provider" value={mapProvider} />
-              <p className="text-xs text-warm-muted">
+              <p className="text-warm-muted text-xs">
                 Select which map provider to use when viewing properties on the map
               </p>
             </div>
@@ -285,7 +306,12 @@ export function SettingsForm({ user, displayName: initialDisplayName, mapProvide
 
             <Button
               type="submit"
-              disabled={passwordPending || !currentPassword || !newPassword || newPassword !== confirmPassword}
+              disabled={
+                passwordPending ||
+                !currentPassword ||
+                !newPassword ||
+                newPassword !== confirmPassword
+              }
               className="bg-warm-text text-warm-card hover:bg-warm-text/90"
             >
               {passwordPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

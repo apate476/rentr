@@ -31,7 +31,6 @@ export function CityCommunityClient({
   const [selectedCategory, setSelectedCategory] = useState<PostCategory | null>(initialCategory)
   const [sort, setSort] = useState(initialSort)
   const [showPostForm, setShowPostForm] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
   const citySlug = createCitySlug(city, state)
 
@@ -83,7 +82,11 @@ export function CityCommunityClient({
     }
   }
 
-  const handlePostSubmit = async (data: { title: string; body: string; category: PostCategory }) => {
+  const handlePostSubmit = async (data: {
+    title: string
+    body: string
+    category: PostCategory
+  }) => {
     setIsLoading(true)
     try {
       const response = await fetch('/api/community/posts', {
@@ -119,14 +122,17 @@ export function CityCommunityClient({
     <div className="space-y-6">
       {/* Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
+        <CategoryFilter
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+        />
 
         <div className="flex items-center gap-2">
-          <span className="text-sm text-warm-muted">Sort:</span>
+          <span className="text-warm-muted text-sm">Sort:</span>
           <select
             value={sort}
             onChange={(e) => handleSortChange(e.target.value)}
-            className="rounded-lg border border-warm-border bg-warm-card px-3 py-1.5 text-sm text-warm-text focus:outline-none focus:ring-2 focus:ring-warm-text/20"
+            className="border-warm-border bg-warm-card text-warm-text focus:ring-warm-text/20 rounded-lg border px-3 py-1.5 text-sm focus:ring-2 focus:outline-none"
           >
             <option value="newest">Newest</option>
             <option value="upvoted">Most Upvoted</option>
@@ -147,7 +153,7 @@ export function CityCommunityClient({
         ) : (
           <Button
             onClick={() => setShowPostForm(true)}
-            className="w-full rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 sm:w-auto"
+            className="bg-warm-text text-warm-card hover:bg-warm-text/90 w-full rounded-lg sm:w-auto"
           >
             Create Post
           </Button>
@@ -155,7 +161,7 @@ export function CityCommunityClient({
       ) : (
         <Button
           onClick={() => router.push(`/login?redirectTo=/city/${citySlug}`)}
-          className="w-full rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 sm:w-auto"
+          className="bg-warm-text text-warm-card hover:bg-warm-text/90 w-full rounded-lg sm:w-auto"
         >
           Sign in to create a post
         </Button>
@@ -163,7 +169,7 @@ export function CityCommunityClient({
 
       {/* Posts */}
       {posts.length === 0 ? (
-        <div className="rounded-xl border border-warm-border bg-warm-card p-12 text-center">
+        <div className="border-warm-border bg-warm-card rounded-xl border p-12 text-center">
           <p className="text-warm-muted">No posts yet. Be the first to start a discussion!</p>
         </div>
       ) : (

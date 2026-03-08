@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Transform to include author display name
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const posts = (data || []).map((post: any) => ({
     ...post,
     author_display_name: post.profiles?.display_name || null,
@@ -74,43 +75,56 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { city, state, title, body: postBody, category } = body
 
-  if (!city || !state || !title || !postBody || !category) {
-    return NextResponse.json(
-      { error: 'Missing required fields: city, state, title, body, category' },
-      { status: 400 }
-    )
-  }
+    if (!city || !state || !title || !postBody || !category) {
+      return NextResponse.json(
+        { error: 'Missing required fields: city, state, title, body, category' },
+        { status: 400 }
+      )
+    }
 
-  // Validate category
-  const validCategories = ['roommates', 'recommendations', 'landlord-warnings', 'housing-advice', 'general']
-  if (!validCategories.includes(category)) {
-    return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
-  }
+    // Validate category
+    const validCategories = [
+      'roommates',
+      'recommendations',
+      'landlord-warnings',
+      'housing-advice',
+      'general',
+    ]
+    if (!validCategories.includes(category)) {
+      return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
+    }
 
-  // Validate lengths
-  if (title.length < 10 || title.length > 200) {
-    return NextResponse.json({ error: 'Title must be between 10 and 200 characters' }, { status: 400 })
-  }
+    // Validate lengths
+    if (title.length < 10 || title.length > 200) {
+      return NextResponse.json(
+        { error: 'Title must be between 10 and 200 characters' },
+        { status: 400 }
+      )
+    }
 
-  if (postBody.length < 50 || postBody.length > 5000) {
-    return NextResponse.json({ error: 'Body must be between 50 and 5000 characters' }, { status: 400 })
-  }
+    if (postBody.length < 50 || postBody.length > 5000) {
+      return NextResponse.json(
+        { error: 'Body must be between 50 and 5000 characters' },
+        { status: 400 }
+      )
+    }
 
-  const { data, error } = await (supabase.from('community_posts') as any)
-    .insert({
-      city,
-      state,
-      title,
-      body: postBody,
-      category,
-      user_id: user.id,
-    })
-    .select()
-    .single()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from('community_posts') as any)
+      .insert({
+        city,
+        state,
+        title,
+        body: postBody,
+        category,
+        user_id: user.id,
+      })
+      .select()
+      .single()
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
 
     return NextResponse.json({ post: data }, { status: 201 })
   } catch (error) {

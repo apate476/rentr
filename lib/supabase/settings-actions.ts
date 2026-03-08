@@ -1,15 +1,12 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
 export type SettingsState = {
   error: string | null
   success: string | null
 }
-
-const initialState: SettingsState = { error: null, success: null }
 
 export async function updateProfile(
   prevState: SettingsState,
@@ -31,6 +28,7 @@ export async function updateProfile(
   }
 
   // Update profile table
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error: profileError } = await (supabase as any)
     .from('profiles')
     .update({ display_name: displayName })
@@ -134,7 +132,10 @@ export async function updateEmail(
   })
 
   if (updateError) {
-    return { error: updateError.message || 'Failed to update email. Please try again.', success: null }
+    return {
+      error: updateError.message || 'Failed to update email. Please try again.',
+      success: null,
+    }
   }
 
   return {
@@ -163,6 +164,7 @@ export async function updateMapProvider(
   }
 
   // Update profile table
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error: profileError } = await (supabase as any)
     .from('profiles')
     .update({ map_provider: mapProvider })
@@ -172,16 +174,18 @@ export async function updateMapProvider(
     console.error('Map provider update error:', profileError)
     // Check if the column doesn't exist (migration not run)
     const errorMessage = profileError.message || ''
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const errorCode = (profileError as any).code || ''
-    
+
     if (
       errorCode === '42703' || // PostgreSQL: column does not exist
-      errorMessage.toLowerCase().includes('column') && 
-      errorMessage.toLowerCase().includes('map_provider') ||
-      errorMessage.toLowerCase().includes("does not exist")
+      (errorMessage.toLowerCase().includes('column') &&
+        errorMessage.toLowerCase().includes('map_provider')) ||
+      errorMessage.toLowerCase().includes('does not exist')
     ) {
       return {
-        error: 'The map_provider column does not exist. Please run the database migration: rentr/supabase/migrations/20260307000000_map_settings.sql',
+        error:
+          'The map_provider column does not exist. Please run the database migration: rentr/supabase/migrations/20260307000000_map_settings.sql',
         success: null,
       }
     }
@@ -219,7 +223,8 @@ export async function deleteAccount(
   // For now, we'll mark the account for deletion and require admin action
   // In production, you should implement this via an API route with service role key
   return {
-    error: 'Account deletion is currently unavailable. Please contact support at support@rentr.app to delete your account.',
+    error:
+      'Account deletion is currently unavailable. Please contact support at support@rentr.app to delete your account.',
     success: null,
   }
 }

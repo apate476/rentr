@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { calculateTrend, calculateImpactScore, calculatePercentile, type Trend } from '@/lib/dashboard/utils'
+import { calculateTrend, calculateImpactScore, calculatePercentile } from '@/lib/dashboard/utils'
 import type { CommunityImpact } from '@/types/dashboard.types'
 
 export async function GET() {
@@ -24,7 +24,11 @@ export async function GET() {
       throw reviewsError
     }
 
-    const reviewsArray = (reviews || []) as Array<{ id: string; helpful_count: number; created_at: string }>
+    const reviewsArray = (reviews || []) as Array<{
+      id: string
+      helpful_count: number
+      created_at: string
+    }>
     const totalHelpfulVotes = reviewsArray.reduce((sum, r) => sum + (r.helpful_count || 0), 0)
     const totalReviews = reviewsArray.length
     const reviewsWithVotes = reviewsArray.filter((r) => (r.helpful_count || 0) > 0).length
@@ -36,11 +40,15 @@ export async function GET() {
     const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
     const previous30Days = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
 
-    const recentVotes = reviewsArray.filter((r) => new Date(r.created_at) >= last30Days).reduce((sum, r) => sum + (r.helpful_count || 0), 0)
-    const previousVotes = reviewsArray.filter((r) => {
-      const date = new Date(r.created_at)
-      return date >= previous30Days && date < last30Days
-    }).reduce((sum, r) => sum + (r.helpful_count || 0), 0)
+    const recentVotes = reviewsArray
+      .filter((r) => new Date(r.created_at) >= last30Days)
+      .reduce((sum, r) => sum + (r.helpful_count || 0), 0)
+    const previousVotes = reviewsArray
+      .filter((r) => {
+        const date = new Date(r.created_at)
+        return date >= previous30Days && date < last30Days
+      })
+      .reduce((sum, r) => sum + (r.helpful_count || 0), 0)
 
     const helpfulVotesTrend = calculateTrend(recentVotes, previousVotes)
 
@@ -54,7 +62,11 @@ export async function GET() {
       throw pioneerError
     }
 
-    const pioneerArray = (pioneerProperties || []) as Array<{ id: string; city: string; state: string }>
+    const pioneerArray = (pioneerProperties || []) as Array<{
+      id: string
+      city: string
+      state: string
+    }>
     const pioneerCount = pioneerArray.length
 
     // Pioneer cities
@@ -71,7 +83,12 @@ export async function GET() {
     const pioneerCities = Array.from(cityMap.values()).sort((a, b) => b.count - a.count)
 
     // Calculate impact score
-    const impactScore = calculateImpactScore(totalHelpfulVotes, pioneerCount, reviewsWithVotes, totalReviews)
+    const impactScore = calculateImpactScore(
+      totalHelpfulVotes,
+      pioneerCount,
+      reviewsWithVotes,
+      totalReviews
+    )
 
     // Calculate rank percentile (compare to all users)
     const { data: allUserStats } = await supabase

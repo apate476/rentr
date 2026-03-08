@@ -2,10 +2,6 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { parseCitySlug } from '@/lib/community/utils'
 import { CityHeader } from '@/components/community/city-header'
-import { PostCard } from '@/components/community/post-card'
-import { CategoryFilter } from '@/components/community/category-filter'
-import { PostForm } from '@/components/community/post-form'
-import { Button } from '@/components/ui/button'
 import { CityCommunityClient } from './client'
 import type { PostCategory } from '@/types/community.types'
 import type { CityStats } from '@/types/community.types'
@@ -38,7 +34,11 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
   const propertyIds = (cityProperties || []).map((p: { id: string }) => p.id)
 
   const [propertiesResult, postsResult, reviewsResult] = await Promise.all([
-    supabase.from('properties').select('id', { count: 'exact', head: true }).eq('city', city).eq('state', state),
+    supabase
+      .from('properties')
+      .select('id', { count: 'exact', head: true })
+      .eq('city', city)
+      .eq('state', state),
     supabase
       .from('community_posts')
       .select('id', { count: 'exact', head: true })
@@ -105,6 +105,7 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
   }
 
   // Transform posts
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const posts = (postsData || []).map((post: any) => ({
     ...post,
     author_display_name: post.profiles?.display_name || null,

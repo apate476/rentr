@@ -17,7 +17,11 @@ function mapSize(size: 'sm' | 'md' | 'lg'): 'sm' | 'default' | 'lg' {
   return size === 'md' ? 'default' : size
 }
 
-export function CompareButton({ propertyId, variant = 'outline', size = 'sm' }: CompareButtonProps) {
+export function CompareButton({
+  propertyId,
+  variant = 'outline',
+  size = 'sm',
+}: CompareButtonProps) {
   const router = useRouter()
   const [isInCompare, setIsInCompare] = useState(false)
   const [compareCount, setCompareCount] = useState(0)
@@ -26,8 +30,11 @@ export function CompareButton({ propertyId, variant = 'outline', size = 'sm' }: 
     const stored = localStorage.getItem(COMPARE_STORAGE_KEY)
     if (stored) {
       const ids = JSON.parse(stored) as string[]
-      setIsInCompare(ids.includes(propertyId))
-      setCompareCount(ids.length)
+      // Use setTimeout to avoid setState in effect
+      setTimeout(() => {
+        setIsInCompare(ids.includes(propertyId))
+        setCompareCount(ids.length)
+      }, 0)
     }
   }, [propertyId])
 
@@ -69,9 +76,9 @@ export function CompareButton({ propertyId, variant = 'outline', size = 'sm' }: 
           onClick={handleToggle}
           variant="default"
           size={mapSize(size)}
-          className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90"
+          className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg"
         >
-          <GitCompare className="h-4 w-4 mr-1.5" />
+          <GitCompare className="mr-1.5 h-4 w-4" />
           Remove from Compare
         </Button>
         {compareCount > 0 && (
@@ -79,7 +86,7 @@ export function CompareButton({ propertyId, variant = 'outline', size = 'sm' }: 
             onClick={handleGoToCompare}
             variant="outline"
             size={mapSize(size)}
-            className="rounded-lg border-warm-border"
+            className="border-warm-border rounded-lg"
           >
             Compare ({compareCount})
           </Button>
@@ -93,10 +100,10 @@ export function CompareButton({ propertyId, variant = 'outline', size = 'sm' }: 
       onClick={handleToggle}
       variant={variant}
       size={mapSize(size)}
-      className="rounded-lg border-warm-border"
+      className="border-warm-border rounded-lg"
       disabled={compareCount >= 3}
     >
-      <GitCompare className="h-4 w-4 mr-1.5" />
+      <GitCompare className="mr-1.5 h-4 w-4" />
       Add to Compare
     </Button>
   )

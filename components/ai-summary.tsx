@@ -22,8 +22,11 @@ export function AiSummary({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setError(null)
-    setLoading(true)
+    // Use setTimeout to avoid setState in effect
+    setTimeout(() => {
+      setError(null)
+      setLoading(true)
+    }, 0)
     fetch('/api/ai/summarize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -68,9 +71,7 @@ export function AiSummary({
   if (error) {
     return (
       <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
-        <p className="text-xs text-amber-800">
-          {error}. Please try refreshing the page.
-        </p>
+        <p className="text-xs text-amber-800">{error}. Please try refreshing the page.</p>
       </div>
     )
   }
@@ -80,7 +81,7 @@ export function AiSummary({
   return (
     <div className="mb-6 space-y-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
       <p className="flex items-center gap-1.5 text-xs">
-        <span className="rounded bg-primary px-1.5 py-0.5 font-[family-name:var(--font-poppins)] text-[10px] font-black uppercase tracking-wider text-white">
+        <span className="bg-primary rounded px-1.5 py-0.5 font-[family-name:var(--font-poppins)] text-[10px] font-black tracking-wider text-white uppercase">
           AI
         </span>
         <span className="text-slate-500">

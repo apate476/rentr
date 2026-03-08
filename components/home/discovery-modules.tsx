@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Map, Trophy, Clock, Volume2, ThumbsUp, AlertTriangle } from 'lucide-react'
+import { Trophy, Clock, Volume2, ThumbsUp } from 'lucide-react'
 
 const discoveryItems = [
   {
@@ -34,11 +34,11 @@ const discoveryItems = [
 
 export function DiscoveryModules() {
   return (
-    <section className="border-b border-warm-border bg-warm-bg">
+    <section className="border-warm-border bg-warm-bg border-b">
       <div className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
         <div className="mb-8 text-center">
-          <h2 className="font-display text-3xl text-warm-text">Discover properties</h2>
-          <p className="mt-2 text-sm text-warm-muted">
+          <h2 className="font-display text-warm-text text-3xl">Discover properties</h2>
+          <p className="text-warm-muted mt-2 text-sm">
             Explore rentals by decision-relevant insights
           </p>
         </div>
@@ -50,17 +50,19 @@ export function DiscoveryModules() {
               <Link
                 key={item.title}
                 href={item.href}
-                className="group relative overflow-hidden rounded-xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-6 transition-all hover:shadow-lg hover:border-warm-text/20 hover:-translate-y-1"
+                className="group border-warm-border from-warm-card to-warm-secondary/30 hover:border-warm-text/20 relative overflow-hidden rounded-xl border bg-gradient-to-br p-6 transition-all hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="absolute top-0 right-0 h-20 w-20 rounded-full bg-warm-text/5 blur-2xl transition-opacity group-hover:opacity-50" />
-                <div className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-warm-text to-warm-text/80 shadow-md transition-transform group-hover:scale-110">
-                  <Icon className="h-6 w-6 text-warm-card" />
+                <div className="bg-warm-text/5 absolute top-0 right-0 h-20 w-20 rounded-full blur-2xl transition-opacity group-hover:opacity-50" />
+                <div className="from-warm-text to-warm-text/80 relative mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br shadow-md transition-transform group-hover:scale-110">
+                  <Icon className="text-warm-card h-6 w-6" />
                 </div>
-                <h3 className="relative mb-2 font-display text-lg font-medium text-warm-text transition-colors group-hover:text-warm-text/90">
+                <h3 className="font-display text-warm-text group-hover:text-warm-text/90 relative mb-2 text-lg font-medium transition-colors">
                   {item.title}
                 </h3>
-                <p className="relative text-sm leading-relaxed text-warm-muted">{item.description}</p>
-                <div className="relative mt-4 flex items-center text-xs font-medium text-warm-text opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1">
+                <p className="text-warm-muted relative text-sm leading-relaxed">
+                  {item.description}
+                </p>
+                <div className="text-warm-text relative mt-4 flex items-center text-xs font-medium opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">
                   Explore
                   <svg
                     className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1"

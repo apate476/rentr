@@ -9,6 +9,7 @@ import { Plus } from 'lucide-react'
 const COMPARE_STORAGE_KEY = 'rentr_compare_properties'
 
 interface CompareClientProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialProperties: any[]
 }
 
@@ -32,7 +33,11 @@ export function CompareClient({ initialProperties }: CompareClientProps) {
               })
               if (response.ok) {
                 const summary = await response.json()
-                return { ...property, top_pros: summary.praised || [], top_complaints: summary.issues || [] }
+                return {
+                  ...property,
+                  top_pros: summary.praised || [],
+                  top_complaints: summary.issues || [],
+                }
               }
               return property
             } catch {
@@ -51,6 +56,7 @@ export function CompareClient({ initialProperties }: CompareClientProps) {
     if (properties.length > 0) {
       fetchSummaries()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleRemove = (propertyId: string) => {
@@ -78,15 +84,15 @@ export function CompareClient({ initialProperties }: CompareClientProps) {
         <Button
           onClick={handleAddProperty}
           variant="outline"
-          className="w-full rounded-lg border-warm-border sm:w-auto"
+          className="border-warm-border w-full rounded-lg sm:w-auto"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Add Property to Compare
         </Button>
       )}
 
       {isLoading ? (
-        <div className="rounded-xl border border-warm-border bg-warm-card p-12 text-center">
+        <div className="border-warm-border bg-warm-card rounded-xl border p-12 text-center">
           <p className="text-warm-muted">Loading comparison data...</p>
         </div>
       ) : (

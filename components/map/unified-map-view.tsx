@@ -37,6 +37,7 @@ export function UnifiedMapView({ onBoundsChange, onPropertyClick }: UnifiedMapVi
 
       console.log('UnifiedMapView: User found, fetching profile...')
       // Fetch user's map preference
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: profile, error: profileError } = await (supabase as any)
         .from('profiles')
         .select('map_provider')
@@ -66,7 +67,7 @@ export function UnifiedMapView({ onBoundsChange, onPropertyClick }: UnifiedMapVi
   }
 
   console.log('UnifiedMapView: Rendering map with provider:', mapProvider)
-  
+
   if (mapProvider === 'google') {
     return <GoogleMapView onBoundsChange={onBoundsChange} onPropertyClick={onPropertyClick} />
   }

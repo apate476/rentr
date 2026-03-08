@@ -11,10 +11,13 @@ interface PostCommentsClientProps {
   currentUserId?: string
 }
 
-export function PostCommentsClient({ postId, initialComments, currentUserId }: PostCommentsClientProps) {
+export function PostCommentsClient({
+  postId,
+  initialComments,
+  currentUserId,
+}: PostCommentsClientProps) {
   const router = useRouter()
   const [comments, setComments] = useState(initialComments)
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleAddComment = async (body: string) => {
     setIsSubmitting(true)

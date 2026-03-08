@@ -70,6 +70,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   // ── Address search ─────────────────────────────────────────────────────────
   if (q) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase as any)
       .from('properties')
       .select('*')
@@ -87,14 +88,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </div>
 
         <div className="mb-6 flex items-center justify-between gap-4">
-          <p className="text-sm text-warm-muted">
+          <p className="text-warm-muted text-sm">
             {properties && properties.length > 0
               ? `${properties.length} result${properties.length !== 1 ? 's' : ''} for "${q}"`
               : `No results for "${q}"`}
           </p>
-          {properties && properties.length > 1 && (
-            <SearchSortBar q={q} currentSort={sort} />
-          )}
+          {properties && properties.length > 1 && <SearchSortBar q={q} currentSort={sort} />}
         </div>
 
         {properties && properties.length > 0 ? (
@@ -104,17 +103,18 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-12 text-center shadow-lg">
-            <p className="mb-2 font-display text-2xl text-warm-text">&ldquo;{q}&rdquo;</p>
-            <p className="mb-6 text-sm leading-relaxed text-warm-muted">
+          <div className="border-warm-border from-warm-card to-warm-secondary/30 rounded-2xl border bg-gradient-to-br p-12 text-center shadow-lg">
+            <p className="font-display text-warm-text mb-2 text-2xl">&ldquo;{q}&rdquo;</p>
+            <p className="text-warm-muted mb-6 text-sm leading-relaxed">
               No reviews yet for this address. Be the first to share your experience.
             </p>
             <Link
               href={`/review/new?q=${encodeURIComponent(q)}${place_id ? `&place_id=${place_id}` : ''}`}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-warm-text px-6 py-3 text-sm font-medium text-warm-card transition-all hover:bg-warm-text/90 hover:shadow-md"
+              className="bg-warm-text text-warm-card hover:bg-warm-text/90 inline-flex items-center gap-1.5 rounded-lg px-6 py-3 text-sm font-medium transition-all hover:shadow-md"
             >
               <span className="inline-flex items-center gap-1.5">
-                Write the first review <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                Write the first review{' '}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>
           </div>
@@ -125,6 +125,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   // ── City search ────────────────────────────────────────────────────────────
   if (city) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase as any)
       .from('properties')
       .select('*')
@@ -142,14 +143,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </div>
 
         <div className="mb-6 flex items-center justify-between gap-4">
-          <p className="text-sm text-warm-muted">
+          <p className="text-warm-muted text-sm">
             {properties && properties.length > 0
               ? `${properties.length} propert${properties.length !== 1 ? 'ies' : 'y'} in ${city}`
               : `No reviewed properties in ${city} yet`}
           </p>
-          {properties && properties.length > 1 && (
-            <SearchSortBar city={city} currentSort={sort} />
-          )}
+          {properties && properties.length > 1 && <SearchSortBar city={city} currentSort={sort} />}
         </div>
 
         {properties && properties.length > 0 ? (
@@ -159,9 +158,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-12 text-center shadow-lg">
-            <p className="mb-2 font-display text-2xl text-warm-text">{city}</p>
-            <p className="text-sm leading-relaxed text-warm-muted">
+          <div className="border-warm-border from-warm-card to-warm-secondary/30 rounded-2xl border bg-gradient-to-br p-12 text-center shadow-lg">
+            <p className="font-display text-warm-text mb-2 text-2xl">{city}</p>
+            <p className="text-warm-muted text-sm leading-relaxed">
               No reviewed properties here yet. Search a specific address to leave the first review.
             </p>
           </div>
@@ -176,51 +175,62 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   } = await supabase.auth.getUser()
 
   // User's own reviews (joined with properties)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: myReviewsRaw } = await (supabase as any)
     .from('reviews')
-    .select('property_id, properties(id, address, city, state, avg_overall, review_count, property_type)')
+    .select(
+      'property_id, properties(id, address, city, state, avg_overall, review_count, property_type)'
+    )
     .eq('user_id', user?.id)
     .order('created_at', { ascending: false })
     .limit(3)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const myReviews = myReviewsRaw as any[] | null
 
   // Recent platform reviews
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: recentRaw } = await (supabase as any)
     .from('reviews')
-    .select('id, score_overall, body, created_at, property_id, properties(id, address, city, state)')
+    .select(
+      'id, score_overall, body, created_at, property_id, properties(id, address, city, state)'
+    )
     .order('created_at', { ascending: false })
     .limit(6)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recentReviews = recentRaw as any[] | null
 
   return (
     <div className="min-h-[calc(100vh-64px)]">
       {/* Hero search */}
-      <section className="border-b border-warm-border bg-warm-card px-6 py-20 text-center">
+      <section className="border-warm-border bg-warm-card border-b px-6 py-20 text-center">
         <div className="mx-auto max-w-xl">
-          <p className="mb-4 text-xs font-bold uppercase tracking-widest text-warm-muted">
+          <p className="text-warm-muted mb-4 text-xs font-bold tracking-widest uppercase">
             Search any address or city
           </p>
           <AddressSearch />
         </div>
       </section>
 
-      <div className="mx-auto max-w-5xl px-6 py-16 space-y-16">
-
+      <div className="mx-auto max-w-5xl space-y-16 px-6 py-16">
         {/* Your reviews */}
         {myReviews && myReviews.length > 0 && (
           <section>
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="font-display text-2xl text-warm-text">Your reviews</h2>
-                <p className="mt-1 text-sm text-warm-muted">Properties you've reviewed</p>
+                <h2 className="font-display text-warm-text text-2xl">Your reviews</h2>
+                <p className="text-warm-muted mt-1 text-sm">Properties you&apos;ve reviewed</p>
               </div>
-              <Link href="/profile" className="text-sm text-warm-text hover:text-warm-text/80 font-medium">
+              <Link
+                href="/profile"
+                className="text-warm-text hover:text-warm-text/80 text-sm font-medium"
+              >
                 <span className="inline-flex items-center gap-1">
                   See all <ArrowRight className="h-3.5 w-3.5" />
                 </span>
               </Link>
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {myReviews.map((r: any) => {
                 const p = r.properties
                 if (!p) return null
@@ -234,10 +244,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         {recentReviews && recentReviews.length > 0 && (
           <section>
             <div className="mb-6">
-              <h2 className="font-display text-2xl text-warm-text">Recently on Rentr</h2>
-              <p className="mt-1 text-sm text-warm-muted">What renters are saying right now</p>
+              <h2 className="font-display text-warm-text text-2xl">Recently on Rentr</h2>
+              <p className="text-warm-muted mt-1 text-sm">What renters are saying right now</p>
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {recentReviews.map((r: any) => {
                 const p = r.properties
                 if (!p) return null
@@ -246,12 +257,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   <Link
                     key={r.id}
                     href={`/property/${p.id}`}
-                    className="group flex flex-col gap-3 rounded-xl border border-warm-border bg-warm-card p-5 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20 hover:-translate-y-1"
+                    className="group border-warm-border bg-warm-card hover:border-warm-text/20 flex flex-col gap-3 rounded-xl border p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-warm-text">{p.address}</p>
-                        <p className="text-xs text-warm-muted">
+                        <p className="text-warm-text truncate text-sm font-semibold">{p.address}</p>
+                        <p className="text-warm-muted text-xs">
                           {p.city}, {p.state}
                         </p>
                       </div>
@@ -264,11 +275,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       )}
                     </div>
                     {r.body && (
-                      <p className="text-xs leading-relaxed text-warm-muted">
+                      <p className="text-warm-muted text-xs leading-relaxed">
                         &ldquo;{truncate(r.body, 120)}&rdquo;
                       </p>
                     )}
-                    <p className="text-xs text-warm-muted">
+                    <p className="text-warm-muted text-xs">
                       Anonymous Tenant · {formatDate(r.created_at)}
                     </p>
                   </Link>
@@ -281,38 +292,35 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         {/* Quick actions */}
         <section>
           <div className="mb-6">
-            <h2 className="font-display text-2xl text-warm-text">What you can do</h2>
-            <p className="mt-1 text-sm text-warm-muted">Explore features and get started</p>
+            <h2 className="font-display text-warm-text text-2xl">What you can do</h2>
+            <p className="text-warm-muted mt-1 text-sm">Explore features and get started</p>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             {QUICK_ACTIONS.map(({ title, desc, href, label, disabled }) => (
               <div
                 key={title}
-                className="group flex flex-col gap-3 rounded-xl border border-warm-border bg-gradient-to-br from-warm-card to-warm-secondary/30 p-6 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20"
+                className="group border-warm-border from-warm-card to-warm-secondary/30 hover:border-warm-text/20 flex flex-col gap-3 rounded-xl border bg-gradient-to-br p-6 shadow-sm transition-all hover:shadow-lg"
               >
                 <div>
-                  <h3 className="font-display mb-2 text-lg text-warm-text">
-                    {title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-warm-muted">{desc}</p>
+                  <h3 className="font-display text-warm-text mb-2 text-lg">{title}</h3>
+                  <p className="text-warm-muted text-sm leading-relaxed">{desc}</p>
                 </div>
                 {disabled ? (
-                  <span className="mt-auto text-xs font-medium text-warm-muted">{label}</span>
+                  <span className="text-warm-muted mt-auto text-xs font-medium">{label}</span>
                 ) : (
                   <Link
                     href={href}
-                    className="mt-auto text-sm font-medium text-warm-text hover:text-warm-text/80"
+                    className="text-warm-text hover:text-warm-text/80 mt-auto text-sm font-medium"
                   >
                     <span className="inline-flex items-center gap-1">
-                    {label} <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
+                      {label} <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
                   </Link>
                 )}
               </div>
             ))}
           </div>
         </section>
-
       </div>
     </div>
   )

@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { ComparisonTable } from '@/components/compare/comparison-table'
 import { CompareClient } from './client'
 
 interface ComparePageProps {
@@ -13,8 +12,10 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
   if (!ids) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="rounded-xl border border-warm-border bg-warm-card p-12 text-center">
-          <h1 className="mb-4 font-display text-2xl font-bold text-warm-text">Compare Properties</h1>
+        <div className="border-warm-border bg-warm-card rounded-xl border p-12 text-center">
+          <h1 className="font-display text-warm-text mb-4 text-2xl font-bold">
+            Compare Properties
+          </h1>
           <p className="text-warm-muted">
             Add properties to compare by clicking &ldquo;Add to Compare&rdquo; on any property page.
           </p>
@@ -23,7 +24,10 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
     )
   }
 
-  const propertyIds = ids.split(',').filter((id) => id.trim().length > 0).slice(0, 3)
+  const propertyIds = ids
+    .split(',')
+    .filter((id) => id.trim().length > 0)
+    .slice(0, 3)
 
   if (propertyIds.length === 0) {
     notFound()
@@ -40,7 +44,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
   if (propertiesError || !propertiesData || propertiesData.length === 0) {
     return (
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="rounded-xl border border-warm-border bg-warm-card p-12 text-center">
+        <div className="border-warm-border bg-warm-card rounded-xl border p-12 text-center">
           <p className="text-warm-muted">Failed to load comparison data.</p>
         </div>
       </div>
@@ -55,7 +59,9 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
 
   // Fetch AI summaries (async, will be handled client-side if needed)
   const properties = propertiesData.map((property: { id: string }) => {
-    const propertyReviews = (reviews?.filter((r: { property_id: string }) => r.property_id === property.id) || []) as Array<{
+    const propertyReviews = (reviews?.filter(
+      (r: { property_id: string }) => r.property_id === property.id
+    ) || []) as Array<{
       property_id: string
       rent_amount: number | null
       would_rent_again: boolean | null
@@ -74,7 +80,9 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
     const wouldRentAgainPct =
       wouldRentAgainReviews.length >= 3
         ? Math.round(
-            (wouldRentAgainReviews.filter((r) => r.would_rent_again).length / wouldRentAgainReviews.length) * 100
+            (wouldRentAgainReviews.filter((r) => r.would_rent_again).length /
+              wouldRentAgainReviews.length) *
+              100
           )
         : null
 
@@ -90,8 +98,10 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-warm-text">Compare Properties</h1>
-        <p className="mt-2 text-sm text-warm-muted">Side-by-side comparison of {properties.length} properties</p>
+        <h1 className="font-display text-warm-text text-3xl font-bold">Compare Properties</h1>
+        <p className="text-warm-muted mt-2 text-sm">
+          Side-by-side comparison of {properties.length} properties
+        </p>
       </div>
 
       <CompareClient initialProperties={properties} />

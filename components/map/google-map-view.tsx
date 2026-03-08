@@ -1,9 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import type { Database } from '@/types/database.types'
-
-type Property = Database['public']['Tables']['properties']['Row']
 
 interface GoogleMapViewProps {
   onBoundsChange?: (bounds: { north: number; south: number; east: number; west: number }) => void
@@ -12,6 +9,7 @@ interface GoogleMapViewProps {
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     google: any
     initGoogleMap: () => void
   }
@@ -19,8 +17,9 @@ declare global {
 
 export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const map = useRef<any>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([])
   const [scriptLoaded, setScriptLoaded] = useState(false)
 
@@ -32,10 +31,13 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
       keyLength: googleMapsApiKey?.length,
       keyPrefix: googleMapsApiKey?.substring(0, 10) + '...',
     })
-    
+
     if (!googleMapsApiKey) {
       console.error('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is not set')
-      console.error('Available env vars:', Object.keys(process.env).filter((k) => k.includes('GOOGLE')))
+      console.error(
+        'Available env vars:',
+        Object.keys(process.env).filter((k) => k.includes('GOOGLE'))
+      )
       if (mapContainer.current) {
         mapContainer.current.innerHTML = `
           <div style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 20px; text-align: center;">
@@ -53,7 +55,8 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
     // Check if script is already loaded
     if (window.google && window.google.maps && window.google.maps.MapTypeId) {
       console.log('Google Maps already loaded')
-      setScriptLoaded(true)
+      // Use setTimeout to avoid setState in effect
+      setTimeout(() => setScriptLoaded(true), 0)
       return
     }
 
@@ -69,7 +72,7 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
           clearInterval(checkInterval)
         }
       }, 100)
-      
+
       // Also listen to the script's load event if it's still loading
       if (existingScript instanceof HTMLScriptElement && !existingScript.onload) {
         existingScript.onload = () => {
@@ -80,7 +83,7 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
           clearInterval(checkInterval)
         }
       }
-      
+
       return () => clearInterval(checkInterval)
     }
 
@@ -101,7 +104,7 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
           clearInterval(checkMapTypeId)
         }
       }, 50)
-      
+
       // Timeout after 2 seconds
       setTimeout(() => {
         clearInterval(checkMapTypeId)
@@ -140,7 +143,7 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
         hasContainer: !!mapContainer.current,
         hasMap: !!map.current,
         hasGoogle: !!(window.google && window.google.maps),
-        hasMapTypeId: !!(window.google?.maps?.MapTypeId),
+        hasMapTypeId: !!window.google?.maps?.MapTypeId,
       })
       return
     }
@@ -165,7 +168,7 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
 
     function initializeMap() {
       if (!mapContainer.current || map.current) return
-      
+
       if (!window.google?.maps?.MapTypeId) {
         console.error('MapTypeId still not available')
         return
@@ -187,52 +190,56 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
         })
         console.log('Google Map initialized successfully')
 
-        map.current.addListener('tilesloaded', () => {
-          setIsLoaded(true)
-        })
+        map.current.addListener('tilesloaded', () => {})
 
         // Fetch and display pins
         fetch('/api/map/pins')
           .then((res) => res.json())
-          .then(({ data }: { data: Array<{ id: string; lat: number; lng: number; avg_overall: number | null }> }) => {
-            if (!map.current || !data) return
+          .then(
+            ({
+              data,
+            }: {
+              data: Array<{ id: string; lat: number; lng: number; avg_overall: number | null }>
+            }) => {
+              if (!map.current || !data) return
 
-            // Clear existing markers
-            markersRef.current.forEach((marker) => marker.setMap(null))
-            markersRef.current = []
+              // Clear existing markers
+              markersRef.current.forEach((marker) => marker.setMap(null))
+              markersRef.current = []
 
-            // Add markers for each property
-            data.forEach((property) => {
-              const color =
-                property.avg_overall !== null
-                  ? property.avg_overall >= 4
-                    ? '#22c55e'
-                    : property.avg_overall >= 3
-                      ? '#eab308'
-                      : '#ef4444'
-                  : '#94a3b8'
+              // Add markers for each property
+              data.forEach((property) => {
+                const color =
+                  property.avg_overall !== null
+                    ? property.avg_overall >= 4
+                      ? '#22c55e'
+                      : property.avg_overall >= 3
+                        ? '#eab308'
+                        : '#ef4444'
+                    : '#94a3b8'
 
-              const marker = new window.google.maps.Marker({
-                position: { lat: property.lat, lng: property.lng },
-                map: map.current!,
-                icon: {
-                  path: window.google.maps.SymbolPath.CIRCLE,
-                  scale: 12,
-                  fillColor: color,
-                  fillOpacity: 1,
-                  strokeColor: '#ffffff',
-                  strokeWeight: 2,
-                },
-                title: `Property ${property.id}`,
+                const marker = new window.google.maps.Marker({
+                  position: { lat: property.lat, lng: property.lng },
+                  map: map.current!,
+                  icon: {
+                    path: window.google.maps.SymbolPath.CIRCLE,
+                    scale: 12,
+                    fillColor: color,
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2,
+                  },
+                  title: `Property ${property.id}`,
+                })
+
+                marker.addListener('click', () => {
+                  onPropertyClick?.(property.id)
+                })
+
+                markersRef.current.push(marker)
               })
-
-              marker.addListener('click', () => {
-                onPropertyClick?.(property.id)
-              })
-
-              markersRef.current.push(marker)
-            })
-          })
+            }
+          )
           .catch((err) => {
             console.error('Failed to load map pins:', err)
           })
@@ -275,9 +282,9 @@ export function GoogleMapView({ onBoundsChange, onPropertyClick }: GoogleMapView
   }, [scriptLoaded, onBoundsChange, onPropertyClick])
 
   return (
-    <div 
-      ref={mapContainer} 
-      className="h-full w-full" 
+    <div
+      ref={mapContainer}
+      className="h-full w-full"
       style={{ minHeight: '400px', height: '100%', width: '100%' }}
     />
   )

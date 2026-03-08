@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   }
 
   // Get comments with author info
-  const { data: comments, error: commentsError } = await supabase
+  const { data: comments } = await supabase
     .from('community_comments')
     .select('*, profiles!inner(display_name)')
     .eq('post_id', id)
@@ -39,6 +39,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   }
 
   // Transform post
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const postAny = post as any
   const postWithAuthor = {
     ...postAny,
@@ -48,6 +49,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   }
 
   // Transform comments
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const commentsWithAuthors = (comments || []).map((comment: any) => ({
     ...comment,
     author_display_name: comment.profiles?.display_name || null,
@@ -75,44 +77,52 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const body = await request.json()
     const { title, body: postBody, category } = body
 
-  // Verify ownership
-  const { data: existingPost, error: fetchError } = await supabase
-    .from('community_posts')
-    .select('user_id')
-    .eq('id', id)
-    .single()
+    // Verify ownership
+    const { data: existingPost, error: fetchError } = await supabase
+      .from('community_posts')
+      .select('user_id')
+      .eq('id', id)
+      .single()
 
-  if (fetchError || !existingPost) {
-    return NextResponse.json({ error: 'Post not found' }, { status: 404 })
-  }
+    if (fetchError || !existingPost) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+    }
 
-  if ((existingPost as { user_id: string }).user_id !== user.id) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  }
+    if ((existingPost as { user_id: string }).user_id !== user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
-  // Validate if provided
-  if (title && (title.length < 10 || title.length > 200)) {
-    return NextResponse.json({ error: 'Title must be between 10 and 200 characters' }, { status: 400 })
-  }
+    // Validate if provided
+    if (title && (title.length < 10 || title.length > 200)) {
+      return NextResponse.json(
+        { error: 'Title must be between 10 and 200 characters' },
+        { status: 400 }
+      )
+    }
 
-  if (postBody && (postBody.length < 50 || postBody.length > 5000)) {
-    return NextResponse.json({ error: 'Body must be between 50 and 5000 characters' }, { status: 400 })
-  }
+    if (postBody && (postBody.length < 50 || postBody.length > 5000)) {
+      return NextResponse.json(
+        { error: 'Body must be between 50 and 5000 characters' },
+        { status: 400 }
+      )
+    }
 
-  const updateData: any = {}
-  if (title) updateData.title = title
-  if (postBody) updateData.body = postBody
-  if (category) updateData.category = category
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateData: any = {}
+    if (title) updateData.title = title
+    if (postBody) updateData.body = postBody
+    if (category) updateData.category = category
 
-  const { data, error } = await (supabase.from('community_posts') as any)
-    .update(updateData)
-    .eq('id', id)
-    .select()
-    .single()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from('community_posts') as any)
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
 
     return NextResponse.json({ post: data })
   } catch (error) {
@@ -124,7 +134,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const supabase = await createClient()
   const {
     data: { user },

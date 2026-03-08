@@ -11,6 +11,7 @@ export default async function SettingsPage() {
   if (!user) redirect('/login')
 
   // Get profile data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: profile } = await (supabase as any)
     .from('profiles')
     .select('display_name, map_provider')
@@ -20,8 +21,8 @@ export default async function SettingsPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
       <div className="mb-10">
-        <h1 className="font-display text-4xl text-warm-text sm:text-5xl">Settings</h1>
-        <p className="mt-2 text-sm text-warm-muted">Manage your account settings and preferences</p>
+        <h1 className="font-display text-warm-text text-4xl sm:text-5xl">Settings</h1>
+        <p className="text-warm-muted mt-2 text-sm">Manage your account settings and preferences</p>
       </div>
 
       <SettingsForm

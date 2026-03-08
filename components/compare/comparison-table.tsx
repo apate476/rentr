@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { X, MapPin, Star, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { X, MapPin, Star, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { Database } from '@/types/database.types'
 
@@ -38,7 +38,9 @@ function scoreBadgeClass(score: number | null): string {
 }
 
 function getWinner(properties: ComparisonProperty[], key: keyof PropertyRow): number | null {
-  const scores = properties.map((p, idx) => ({ score: p[key] as number | null, idx })).filter((s) => s.score !== null)
+  const scores = properties
+    .map((p, idx) => ({ score: p[key] as number | null, idx }))
+    .filter((s) => s.score !== null)
   if (scores.length === 0) return null
   const maxScore = Math.max(...scores.map((s) => s.score!))
   const winners = scores.filter((s) => s.score === maxScore)
@@ -48,7 +50,7 @@ function getWinner(properties: ComparisonProperty[], key: keyof PropertyRow): nu
 export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) {
   if (properties.length === 0) {
     return (
-      <div className="rounded-xl border border-warm-border bg-warm-card p-12 text-center">
+      <div className="border-warm-border bg-warm-card rounded-xl border p-12 text-center">
         <p className="text-warm-muted">No properties to compare. Add properties to get started.</p>
       </div>
     )
@@ -57,24 +59,27 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
   return (
     <div className="space-y-6">
       {/* Property Headers */}
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}>
-        <div className="font-display text-sm font-semibold text-warm-text">Property</div>
-        {properties.map((property, idx) => (
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
+      >
+        <div className="font-display text-warm-text text-sm font-semibold">Property</div>
+        {properties.map((property) => (
           <div key={property.id} className="relative">
             <Button
               onClick={() => onRemove(property.id)}
               variant="ghost"
               size="sm"
-              className="absolute -right-2 -top-2 h-6 w-6 rounded-full p-0 text-warm-muted hover:text-red-600"
+              className="text-warm-muted absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 hover:text-red-600"
             >
               <X className="h-4 w-4" />
             </Button>
             <Link
               href={`/property/${property.id}`}
-              className="block rounded-lg border border-warm-border bg-warm-card p-4 transition-all hover:shadow-md"
+              className="border-warm-border bg-warm-card block rounded-lg border p-4 transition-all hover:shadow-md"
             >
-              <p className="font-semibold text-warm-text">{property.address}</p>
-              <p className="mt-1 flex items-center gap-1 text-xs text-warm-muted">
+              <p className="text-warm-text font-semibold">{property.address}</p>
+              <p className="text-warm-muted mt-1 flex items-center gap-1 text-xs">
                 <MapPin className="h-3 w-3" />
                 {property.city}, {property.state}
               </p>
@@ -84,8 +89,11 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
       </div>
 
       {/* Overall Score */}
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}>
-        <div className="font-display text-sm font-semibold text-warm-text">Overall Score</div>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
+      >
+        <div className="font-display text-warm-text text-sm font-semibold">Overall Score</div>
         {properties.map((property, idx) => {
           const winner = getWinner(properties, 'avg_overall') === idx
           return (
@@ -107,10 +115,13 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
       </div>
 
       {/* Review Count */}
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}>
-        <div className="font-display text-sm font-semibold text-warm-text">Review Count</div>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
+      >
+        <div className="font-display text-warm-text text-sm font-semibold">Review Count</div>
         {properties.map((property) => (
-          <div key={property.id} className="text-center text-sm text-warm-text">
+          <div key={property.id} className="text-warm-text text-center text-sm">
             {property.review_count}
           </div>
         ))}
@@ -122,16 +133,18 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
         return (
           <div
             key={key}
-            className="grid gap-4 border-t border-warm-border pt-4"
+            className="border-warm-border grid gap-4 border-t pt-4"
             style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
           >
-            <div className="font-display text-sm font-semibold text-warm-text">{label}</div>
+            <div className="font-display text-warm-text text-sm font-semibold">{label}</div>
             {properties.map((property, idx) => {
               const score = property[key as keyof PropertyRow] as number | null
               const isWinner = winnerIdx === idx
               return (
                 <div key={property.id} className="text-center">
-                  <span className={`inline-block rounded-full px-3 py-1 text-sm font-bold ${scoreBadgeClass(score)}`}>
+                  <span
+                    className={`inline-block rounded-full px-3 py-1 text-sm font-bold ${scoreBadgeClass(score)}`}
+                  >
                     {score ? score.toFixed(1) : '—'}
                   </span>
                   {isWinner && (
@@ -147,14 +160,22 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
       })}
 
       {/* Rent Range */}
-      <div className="grid gap-4 border-t border-warm-border pt-4" style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}>
-        <div className="font-display text-sm font-semibold text-warm-text">Rent Range</div>
+      <div
+        className="border-warm-border grid gap-4 border-t pt-4"
+        style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
+      >
+        <div className="font-display text-warm-text text-sm font-semibold">Rent Range</div>
         {properties.map((property) => (
-          <div key={property.id} className="text-center text-sm text-warm-text">
+          <div key={property.id} className="text-warm-text text-center text-sm">
             {property.rent_range ? (
               <div>
-                <div>${property.rent_range.min.toLocaleString()} - ${property.rent_range.max.toLocaleString()}</div>
-                <div className="text-xs text-warm-muted">Avg: ${property.rent_range.avg.toLocaleString()}/mo</div>
+                <div>
+                  ${property.rent_range.min.toLocaleString()} - $
+                  {property.rent_range.max.toLocaleString()}
+                </div>
+                <div className="text-warm-muted text-xs">
+                  Avg: ${property.rent_range.avg.toLocaleString()}/mo
+                </div>
               </div>
             ) : (
               <span className="text-warm-muted">—</span>
@@ -164,10 +185,13 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
       </div>
 
       {/* Would Rent Again */}
-      <div className="grid gap-4 border-t border-warm-border pt-4" style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}>
-        <div className="font-display text-sm font-semibold text-warm-text">Would Rent Again</div>
+      <div
+        className="border-warm-border grid gap-4 border-t pt-4"
+        style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
+      >
+        <div className="font-display text-warm-text text-sm font-semibold">Would Rent Again</div>
         {properties.map((property) => (
-          <div key={property.id} className="text-center text-sm text-warm-text">
+          <div key={property.id} className="text-warm-text text-center text-sm">
             {property.would_rent_again_pct !== null ? (
               <span
                 className={`inline-block rounded-full px-3 py-1 text-sm font-bold ${
@@ -186,8 +210,11 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
       </div>
 
       {/* Top Pros */}
-      <div className="grid gap-4 border-t border-warm-border pt-4" style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}>
-        <div className="font-display text-sm font-semibold text-warm-text">Top Pros</div>
+      <div
+        className="border-warm-border grid gap-4 border-t pt-4"
+        style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
+      >
+        <div className="font-display text-warm-text text-sm font-semibold">Top Pros</div>
         {properties.map((property) => (
           <div key={property.id} className="space-y-1">
             {property.top_pros && property.top_pros.length > 0 ? (
@@ -200,15 +227,18 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
                 ))}
               </ul>
             ) : (
-              <span className="text-xs text-warm-muted">—</span>
+              <span className="text-warm-muted text-xs">—</span>
             )}
           </div>
         ))}
       </div>
 
       {/* Top Complaints */}
-      <div className="grid gap-4 border-t border-warm-border pt-4" style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}>
-        <div className="font-display text-sm font-semibold text-warm-text">Top Complaints</div>
+      <div
+        className="border-warm-border grid gap-4 border-t pt-4"
+        style={{ gridTemplateColumns: `repeat(${properties.length + 1}, 1fr)` }}
+      >
+        <div className="font-display text-warm-text text-sm font-semibold">Top Complaints</div>
         {properties.map((property) => (
           <div key={property.id} className="space-y-1">
             {property.top_complaints && property.top_complaints.length > 0 ? (
@@ -221,7 +251,7 @@ export function ComparisonTable({ properties, onRemove }: ComparisonTableProps) 
                 ))}
               </ul>
             ) : (
-              <span className="text-xs text-warm-muted">—</span>
+              <span className="text-warm-muted text-xs">—</span>
             )}
           </div>
         ))}

@@ -43,6 +43,7 @@ export async function signUp(prevState: AuthState, formData: FormData): Promise<
 
   // Persist display name to profiles table (best-effort — may be RLS-gated until email confirmed)
   if (data.user) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (supabase as any).from('profiles').upsert({ id: data.user.id, display_name: fullName })
   }
 
@@ -86,7 +87,7 @@ export async function resetPassword(
 
   // Reset password - Supabase will send email
   // Note: We don't reveal if email exists for security
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
   })
 
@@ -129,7 +130,10 @@ export async function updatePasswordFromReset(
   })
 
   if (updateError) {
-    return { error: updateError.message || 'Failed to reset password. Please try again.', success: false }
+    return {
+      error: updateError.message || 'Failed to reset password. Please try again.',
+      success: false,
+    }
   }
 
   return { error: null, success: true }

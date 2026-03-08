@@ -15,45 +15,50 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { post_id, body: commentBody } = body
 
-  if (!post_id || !commentBody) {
-    return NextResponse.json({ error: 'Missing required fields: post_id, body' }, { status: 400 })
-  }
+    if (!post_id || !commentBody) {
+      return NextResponse.json({ error: 'Missing required fields: post_id, body' }, { status: 400 })
+    }
 
-  // Validate length
-  if (commentBody.length < 10 || commentBody.length > 1000) {
-    return NextResponse.json({ error: 'Comment must be between 10 and 1000 characters' }, { status: 400 })
-  }
+    // Validate length
+    if (commentBody.length < 10 || commentBody.length > 1000) {
+      return NextResponse.json(
+        { error: 'Comment must be between 10 and 1000 characters' },
+        { status: 400 }
+      )
+    }
 
-  // Verify post exists
-  const { data: post, error: postError } = await supabase
-    .from('community_posts')
-    .select('id')
-    .eq('id', post_id)
-    .single()
+    // Verify post exists
+    const { data: post, error: postError } = await supabase
+      .from('community_posts')
+      .select('id')
+      .eq('id', post_id)
+      .single()
 
-  if (postError || !post) {
-    return NextResponse.json({ error: 'Post not found' }, { status: 404 })
-  }
+    if (postError || !post) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+    }
 
-  const { data, error } = await (supabase.from('community_comments') as any)
-    .insert({
-      post_id,
-      body: commentBody,
-      user_id: user.id,
-    })
-    .select('*, profiles!inner(display_name)')
-    .single()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from('community_comments') as any)
+      .insert({
+        post_id,
+        body: commentBody,
+        user_id: user.id,
+      })
+      .select('*, profiles!inner(display_name)')
+      .single()
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
 
-  // Transform to include author display name
-  const comment = {
-    ...data,
-    author_display_name: (data.profiles as any)?.display_name || null,
-    profiles: undefined,
-  }
+    // Transform to include author display name
+    const comment = {
+      ...data,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      author_display_name: (data.profiles as any)?.display_name || null,
+      profiles: undefined,
+    }
 
     return NextResponse.json({ comment }, { status: 201 })
   } catch (error) {
