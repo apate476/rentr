@@ -50,9 +50,13 @@ export async function GET() {
 
     // Aggregate cities by city+state and sum review counts
     const cityMap = new Map<string, { city: string; state: string; reviewCount: number }>()
-    
+
     if (topCitiesData) {
-      for (const prop of topCitiesData as Array<{ city: string; state: string; review_count: number }>) {
+      for (const prop of topCitiesData as Array<{
+        city: string
+        state: string
+        review_count: number
+      }>) {
         const key = `${prop.city}, ${prop.state}`
         const existing = cityMap.get(key)
         if (existing) {
@@ -82,10 +86,15 @@ export async function GET() {
       throw wouldRentAgainError
     }
 
-    const wouldRentAgainArray = (wouldRentAgainData || []) as Array<{ would_rent_again: boolean | null }>
+    const wouldRentAgainArray = (wouldRentAgainData || []) as Array<{
+      would_rent_again: boolean | null
+    }>
     const totalWithWRA = wouldRentAgainArray.length
-    const wouldRentAgainCount = wouldRentAgainArray.filter((r) => r.would_rent_again === true).length
-    const wouldRentAgainPct = totalWithWRA > 0 ? Math.round((wouldRentAgainCount / totalWithWRA) * 100) : null
+    const wouldRentAgainCount = wouldRentAgainArray.filter(
+      (r) => r.would_rent_again === true
+    ).length
+    const wouldRentAgainPct =
+      totalWithWRA > 0 ? Math.round((wouldRentAgainCount / totalWithWRA) * 100) : null
 
     return NextResponse.json({
       data: {

@@ -5,7 +5,13 @@ import { useDashboardReviews } from '@/lib/dashboard/hooks'
 import { ReviewCard } from './review-card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { ReviewFilters } from '@/types/dashboard.types'
 
 export function ReviewList() {
@@ -27,7 +33,7 @@ export function ReviewList() {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-warm-border bg-warm-card p-6 text-center text-warm-muted">
+      <div className="border-warm-border bg-warm-card text-warm-muted rounded-2xl border p-6 text-center">
         <p>Failed to load reviews: {error}</p>
       </div>
     )
@@ -36,7 +42,7 @@ export function ReviewList() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-warm-text font-display">My Reviews</h2>
+        <h2 className="text-warm-text font-display text-xl font-bold">My Reviews</h2>
         <Select value={filters.sortBy} onValueChange={handleSortChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort by" />
@@ -55,7 +61,7 @@ export function ReviewList() {
       {isLoading ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="h-[120px] w-full rounded-xl bg-warm-secondary" />
+            <Skeleton key={i} className="bg-warm-secondary h-[120px] w-full rounded-xl" />
           ))}
         </div>
       ) : reviews.length > 0 ? (
@@ -68,7 +74,7 @@ export function ReviewList() {
 
           {pagination && pagination.totalPages > 1 && (
             <div className="flex items-center justify-between pt-4">
-              <p className="text-sm text-warm-muted">
+              <p className="text-warm-muted text-sm">
                 Page {pagination.page} of {pagination.totalPages} ({pagination.total} total)
               </p>
               <div className="flex gap-2">
@@ -93,9 +99,9 @@ export function ReviewList() {
           )}
         </>
       ) : (
-        <div className="rounded-2xl border border-warm-border bg-warm-card p-12 text-center">
-          <p className="mb-2 font-display text-lg text-warm-text">No reviews yet</p>
-          <p className="mb-6 text-sm text-warm-muted">
+        <div className="border-warm-border bg-warm-card rounded-2xl border p-12 text-center">
+          <p className="font-display text-warm-text mb-2 text-lg">No reviews yet</p>
+          <p className="text-warm-muted mb-6 text-sm">
             Start helping other renters by sharing your experience
           </p>
           <Button asChild className="bg-warm-text text-warm-card hover:bg-warm-text/90">

@@ -17,11 +17,11 @@ export function PropertyCard({ property }: { property: Property }) {
   return (
     <Link
       href={`/property/${id}`}
-      className="group flex items-center justify-between rounded-xl border border-warm-border bg-warm-card p-5 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20 hover:-translate-y-1"
+      className="group border-warm-border bg-warm-card hover:border-warm-text/20 flex items-center justify-between rounded-xl border p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
     >
       <div className="min-w-0">
-        <p className="truncate font-semibold text-warm-text">{address}</p>
-        <p className="mt-0.5 flex items-center gap-2 text-sm text-warm-muted">
+        <p className="text-warm-text truncate font-semibold">{address}</p>
+        <p className="text-warm-muted mt-0.5 flex items-center gap-2 text-sm">
           <Link
             href={`/city/${createCitySlug(city, state)}`}
             onClick={(e) => e.stopPropagation()}
@@ -30,20 +30,20 @@ export function PropertyCard({ property }: { property: Property }) {
             {city}, {state}
           </Link>
           {property_type && (
-            <span className="rounded-full border border-warm-border px-2 py-0.5 text-xs capitalize text-warm-muted">
+            <span className="border-warm-border text-warm-muted rounded-full border px-2 py-0.5 text-xs capitalize">
               {property_type}
             </span>
           )}
         </p>
       </div>
 
-      <div className="ml-4 shrink-0 flex flex-col items-end gap-1">
+      <div className="ml-4 flex shrink-0 flex-col items-end gap-1">
         <span
           className={`rounded-lg px-3 py-1.5 text-base font-black text-white shadow-sm transition-transform group-hover:scale-105 ${scoreBadgeClass(avg_overall)}`}
         >
           {avg_overall ? avg_overall.toFixed(1) : '—'}
         </span>
-        <p className="text-xs text-warm-muted">
+        <p className="text-warm-muted text-xs">
           {review_count} {review_count === 1 ? 'review' : 'reviews'}
         </p>
       </div>

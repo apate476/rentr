@@ -78,7 +78,14 @@ export async function GET(req: NextRequest) {
     const midpoint = Math.floor(timeline.length / 2)
     const firstHalf = timeline.slice(0, midpoint).reduce((sum, item) => sum + item.count, 0)
     const secondHalf = timeline.slice(midpoint).reduce((sum, item) => sum + item.count, 0)
-    const trend = firstHalf === 0 && secondHalf === 0 ? 'stable' : secondHalf > firstHalf ? 'increasing' : secondHalf < firstHalf ? 'decreasing' : 'stable'
+    const trend =
+      firstHalf === 0 && secondHalf === 0
+        ? 'stable'
+        : secondHalf > firstHalf
+          ? 'increasing'
+          : secondHalf < firstHalf
+            ? 'decreasing'
+            : 'stable'
 
     const data: ActivityTimelineData = {
       timeline,

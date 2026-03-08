@@ -10,7 +10,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Missing ids parameter' }, { status: 400 })
   }
 
-  const propertyIds = idsParam.split(',').filter((id) => id.trim().length > 0).slice(0, 3)
+  const propertyIds = idsParam
+    .split(',')
+    .filter((id) => id.trim().length > 0)
+    .slice(0, 3)
 
   if (propertyIds.length === 0) {
     return NextResponse.json({ error: 'No valid property IDs provided' }, { status: 400 })
@@ -56,7 +59,9 @@ export async function GET(request: NextRequest) {
 
   // Calculate rent ranges and would-rent-again percentages
   const propertyData = properties.map((property: { id: string }) => {
-    const propertyReviews = (reviews?.filter((r: { property_id: string }) => r.property_id === property.id) || []) as Array<{
+    const propertyReviews = (reviews?.filter(
+      (r: { property_id: string }) => r.property_id === property.id
+    ) || []) as Array<{
       property_id: string
       rent_amount: number | null
       would_rent_again: boolean | null
@@ -75,7 +80,9 @@ export async function GET(request: NextRequest) {
     const wouldRentAgainPct =
       wouldRentAgainReviews.length >= 3
         ? Math.round(
-            (wouldRentAgainReviews.filter((r) => r.would_rent_again).length / wouldRentAgainReviews.length) * 100
+            (wouldRentAgainReviews.filter((r) => r.would_rent_again).length /
+              wouldRentAgainReviews.length) *
+              100
           )
         : null
 

@@ -63,7 +63,13 @@ function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
-export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]; showSuccessToast?: boolean }) {
+export function ReviewList({
+  reviews,
+  showSuccessToast,
+}: {
+  reviews: ReviewRow[]
+  showSuccessToast?: boolean
+}) {
   const [sort, setSort] = useState<SortKey>('helpful')
   const router = useRouter()
   const pathname = usePathname()
@@ -77,8 +83,10 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
 
   if (reviews.length === 0) {
     return (
-      <div className="rounded-2xl border border-warm-border bg-warm-card p-10 text-center shadow-lg">
-        <p className="text-sm text-warm-muted">No reviews yet. Be the first to share your experience.</p>
+      <div className="border-warm-border bg-warm-card rounded-2xl border p-10 text-center shadow-lg">
+        <p className="text-warm-muted text-sm">
+          No reviews yet. Be the first to share your experience.
+        </p>
       </div>
     )
   }
@@ -90,13 +98,13 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
       <RatingDistribution reviews={reviews} />
 
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-warm-text">
+        <p className="text-warm-text text-sm font-semibold">
           {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
         </p>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
-          className="rounded-lg border border-warm-border bg-warm-card px-3 py-1.5 text-xs font-medium text-warm-text focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="border-warm-border bg-warm-card text-warm-text focus:ring-primary/20 rounded-lg border px-3 py-1.5 text-xs font-medium focus:ring-2 focus:outline-none"
         >
           {SORT_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
@@ -110,7 +118,7 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
         {sorted.map((review) => (
           <div
             key={review.id}
-            className={`group rounded-xl border border-warm-border border-l-4 bg-warm-card p-6 shadow-sm transition-all hover:shadow-lg hover:border-warm-text/20 ${borderClass(review.score_overall)}`}
+            className={`group border-warm-border bg-warm-card hover:border-warm-text/20 rounded-xl border border-l-4 p-6 shadow-sm transition-all hover:shadow-lg ${borderClass(review.score_overall)}`}
           >
             {/* Top row: score + WRA + date */}
             <div className="mb-3 flex items-start justify-between gap-3">
@@ -128,14 +136,14 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
                   </span>
                 )}
               </div>
-              <span className="shrink-0 text-xs text-warm-muted">
+              <span className="text-warm-muted shrink-0 text-xs">
                 Anonymous Tenant · {formatDate(review.created_at)}
               </span>
             </div>
 
             {/* Tenancy metadata */}
             {(review.move_in_year || review.rent_amount) && (
-              <p className="mb-3 text-xs text-warm-muted">
+              <p className="text-warm-muted mb-3 text-xs">
                 {review.move_in_year && (
                   <>
                     {review.move_in_year}
@@ -149,15 +157,13 @@ export function ReviewList({ reviews, showSuccessToast }: { reviews: ReviewRow[]
             )}
 
             {/* Review body */}
-            <p className="text-sm leading-relaxed text-warm-text">
-              &ldquo;{review.body}&rdquo;
-            </p>
+            <p className="text-warm-text text-sm leading-relaxed">&ldquo;{review.body}&rdquo;</p>
 
             {/* Helpful count */}
             {review.helpful_count > 0 && (
-              <p className="mt-3 text-xs text-warm-muted">
-                {review.helpful_count} {review.helpful_count === 1 ? 'person' : 'people'} found
-                this helpful
+              <p className="text-warm-muted mt-3 text-xs">
+                {review.helpful_count} {review.helpful_count === 1 ? 'person' : 'people'} found this
+                helpful
               </p>
             )}
           </div>

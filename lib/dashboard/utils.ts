@@ -94,10 +94,14 @@ export function truncateText(text: string, maxLength: number): string {
 /**
  * Calculate months between two dates
  */
-export function calculateMonthsBetween(startDate: string | Date, endDate: string | Date = new Date()): number {
+export function calculateMonthsBetween(
+  startDate: string | Date,
+  endDate: string | Date = new Date()
+): number {
   const start = typeof startDate === 'string' ? new Date(startDate) : startDate
   const end = typeof endDate === 'string' ? new Date(endDate) : endDate
-  const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
+  const months =
+    (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
   return Math.max(0, months)
 }
 

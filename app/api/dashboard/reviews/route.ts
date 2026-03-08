@@ -36,14 +36,31 @@ export async function GET(req: NextRequest) {
     const result = querySchema.safeParse(Object.fromEntries(searchParams))
 
     if (!result.success) {
-      return NextResponse.json({ error: 'Invalid query parameters', details: result.error.issues }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Invalid query parameters', details: result.error.issues },
+        { status: 400 }
+      )
     }
 
-    const { page, limit, sortBy, dateRangeStart, dateRangeEnd, scoreMin, scoreMax, location, propertyType, minHelpfulVotes, search } =
-      result.data
+    const {
+      page,
+      limit,
+      sortBy,
+      dateRangeStart,
+      dateRangeEnd,
+      scoreMin,
+      scoreMax,
+      location,
+      propertyType,
+      minHelpfulVotes,
+      search,
+    } = result.data
 
     // Build base query for filtering
-    let baseQuery = supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
+    let baseQuery = supabase
+      .from('reviews')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
 
     // Apply filters to count query
     if (dateRangeStart) {
@@ -149,25 +166,27 @@ export async function GET(req: NextRequest) {
       would_rent_again: boolean | null
       rent_amount: number | null
       property_id: string
-      properties: Array<{
-        id: string
-        address: string
-        city: string
-        state: string
-        zip: string | null
-        property_type: string | null
-        lat: number
-        lng: number
-      }> | {
-        id: string
-        address: string
-        city: string
-        state: string
-        zip: string | null
-        property_type: string | null
-        lat: number
-        lng: number
-      }
+      properties:
+        | Array<{
+            id: string
+            address: string
+            city: string
+            state: string
+            zip: string | null
+            property_type: string | null
+            lat: number
+            lng: number
+          }>
+        | {
+            id: string
+            address: string
+            city: string
+            state: string
+            zip: string | null
+            property_type: string | null
+            lat: number
+            lng: number
+          }
     }>
     const reviewIds = reviewsArray.map((r) => r.id)
     const { data: photos } = await supabase
@@ -185,13 +204,19 @@ export async function GET(req: NextRequest) {
     const dashboardReviews: DashboardReview[] =
       reviewsArray
         .map((review) => {
-          const property = Array.isArray(review.properties) ? review.properties[0] : review.properties
+          const property = Array.isArray(review.properties)
+            ? review.properties[0]
+            : review.properties
           if (!property || typeof property !== 'object' || !('id' in property)) {
             return null
           }
 
           // Apply location filter if specified
-          if (location && !property.city?.toLowerCase().includes(location.toLowerCase()) && !property.state?.toLowerCase().includes(location.toLowerCase())) {
+          if (
+            location &&
+            !property.city?.toLowerCase().includes(location.toLowerCase()) &&
+            !property.state?.toLowerCase().includes(location.toLowerCase())
+          ) {
             return null
           }
 

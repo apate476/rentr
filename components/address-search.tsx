@@ -121,14 +121,16 @@ export function AddressSearch() {
               <button
                 type="button"
                 className={`flex w-full items-center justify-between px-5 py-3 text-left text-sm transition-colors ${
-                  i === activeIndex ? 'bg-warm-secondary text-warm-text' : 'hover:bg-warm-secondary/50 text-warm-text'
+                  i === activeIndex
+                    ? 'bg-warm-secondary text-warm-text'
+                    : 'hover:bg-warm-secondary/50 text-warm-text'
                 }`}
                 onMouseEnter={() => setActiveIndex(i)}
                 onClick={() => selectSuggestion(s)}
               >
                 <span className="truncate">{s.text}</span>
                 {s.isCity && (
-                  <span className="text-warm-muted ml-3 shrink-0 rounded-lg border border-warm-border bg-warm-secondary px-2 py-0.5 text-xs">
+                  <span className="text-warm-muted border-warm-border bg-warm-secondary ml-3 shrink-0 rounded-lg border px-2 py-0.5 text-xs">
                     City
                   </span>
                 )}

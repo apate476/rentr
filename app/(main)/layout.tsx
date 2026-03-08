@@ -14,36 +14,35 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-warm-bg">
+    <div className="bg-warm-bg min-h-screen">
       <NavSidebar user={user ?? null} />
-      
-      <header className="sticky top-0 z-30 border-b border-warm-border bg-gradient-to-r from-warm-card via-warm-card to-warm-secondary/30 backdrop-blur-md shadow-lg shadow-warm-border/20">
+
+      <header className="border-warm-border from-warm-card via-warm-card to-warm-secondary/30 shadow-warm-border/20 sticky top-0 z-30 border-b bg-gradient-to-r shadow-lg backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 lg:px-6">
           <div className="w-12" /> {/* Spacer for hamburger menu button */}
-          
-          <nav className="flex items-center gap-3 ml-auto">
+          <nav className="ml-auto flex items-center gap-3">
             {user ? (
               <>
                 <form action={signOut}>
-                  <Button 
-                    type="submit" 
-                    variant="outline" 
-                    size="sm" 
-                    className="rounded-lg border-warm-border text-warm-text hover:bg-warm-secondary hover:shadow-md transition-all duration-300 hover:scale-105"
+                  <Button
+                    type="submit"
+                    variant="outline"
+                    size="sm"
+                    className="border-warm-border text-warm-text hover:bg-warm-secondary rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-md"
                   >
-                    <LogOut className="h-4 w-4 mr-2" />
+                    <LogOut className="mr-2 h-4 w-4" />
                     Sign out
                   </Button>
                 </form>
               </>
             ) : (
-              <Button 
-                asChild 
-                size="sm" 
-                className="rounded-lg bg-warm-text text-warm-card hover:bg-warm-text/90 hover:shadow-lg transition-all duration-300 hover:scale-105"
+              <Button
+                asChild
+                size="sm"
+                className="bg-warm-text text-warm-card hover:bg-warm-text/90 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg"
               >
                 <Link href="/login">
-                  <UserIcon className="h-4 w-4 mr-2" />
+                  <UserIcon className="mr-2 h-4 w-4" />
                   Sign in
                 </Link>
               </Button>

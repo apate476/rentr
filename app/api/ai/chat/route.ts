@@ -6,11 +6,6 @@ import { buildChatSystemPrompt } from '@/lib/ai/prompts'
 import { checkUsage, incrementUsage } from '@/lib/ai/usage'
 import { AI_FREE_CHATS_PER_MONTH } from '@/lib/constants'
 
-const admin = createAdminClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient()
@@ -18,6 +13,11 @@ export async function POST(req: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser()
     if (!user) return new Response('Unauthorized', { status: 401 })
+
+    const admin = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
 
     const { data: profile } = await admin
       .from('profiles')
