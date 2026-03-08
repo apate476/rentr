@@ -20,7 +20,6 @@ export function PostCommentsClient({
   const [comments, setComments] = useState(initialComments)
 
   const handleAddComment = async (body: string) => {
-    setIsSubmitting(true)
     try {
       const response = await fetch('/api/community/comments', {
         method: 'POST',
@@ -39,8 +38,6 @@ export function PostCommentsClient({
     } catch (error) {
       console.error('Error adding comment:', error)
       alert('Failed to add comment')
-    } finally {
-      setIsSubmitting(false)
     }
   }
 

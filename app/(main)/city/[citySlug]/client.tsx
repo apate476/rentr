@@ -87,7 +87,6 @@ export function CityCommunityClient({
     body: string
     category: PostCategory
   }) => {
-    setIsLoading(true)
     try {
       const response = await fetch('/api/community/posts', {
         method: 'POST',
@@ -113,8 +112,6 @@ export function CityCommunityClient({
     } catch (error) {
       console.error('Error creating post:', error)
       alert('Failed to create post')
-    } finally {
-      setIsLoading(false)
     }
   }
 
